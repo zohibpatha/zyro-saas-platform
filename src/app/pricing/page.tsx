@@ -4,6 +4,64 @@ import { Button } from '@/components/ui/button'
 import { Check } from 'lucide-react'
 import Link from 'next/link'
 
+const tiers = [
+  {
+    name: 'Starter',
+    id: 'tier-starter',
+    href: '/login',
+    priceMonthly: '₹199',
+    setupFee: '₹499',
+    setupStrikethrough: null,
+    setupDiscount: null,
+    description: 'Perfect for individuals getting started with their digital presence.',
+    features: ['Basic features', 'Standard QR', 'Single location', 'Community support'],
+    mostPopular: false,
+  },
+  {
+    name: 'Pro',
+    id: 'tier-pro',
+    href: '/login',
+    priceMonthly: '₹399',
+    setupFee: '₹999',
+    setupStrikethrough: '₹1999',
+    setupDiscount: '50% Off',
+    description: 'Ideal for growing businesses needing smart tools and customization.',
+    features: ['Smart Review Funnel', 'Private Feedback', 'Custom Colors', 'Analytics Dashboard', 'Priority Email Support'],
+    mostPopular: true,
+  },
+  {
+    name: 'Elite',
+    id: 'tier-elite',
+    href: '/login',
+    priceMonthly: '₹699',
+    setupFee: '₹1499',
+    setupStrikethrough: null,
+    setupDiscount: null,
+    description: 'Advanced features for established businesses and franchises.',
+    features: ['Unlimited locations', 'Custom Branding', 'API Access', 'Dedicated Account Manager', '24/7 Phone Support'],
+    mostPopular: false,
+  },
+]
+
+const faqs = [
+  {
+    question: 'What is the setup fee for?',
+    answer: 'The one-time setup fee covers the initial configuration, design, and personalized branding of your digital page by our team.'
+  },
+  {
+    question: 'Can I switch plans later?',
+    answer: 'Yes, you can upgrade or downgrade your plan at any time. Changes to your monthly subscription will be pro-rated.'
+  },
+  {
+    question: 'Are there any hidden fees?',
+    answer: 'No! The prices you see are all you pay. There are no hidden transaction fees or extra costs.'
+  },
+  {
+    question: 'How does the Smart Review Funnel work?',
+    answer: 'The Smart Review Funnel directs happy customers to Google to leave a 5-star review, while capturing negative feedback privately so you can resolve it before it goes public.'
+  }
+]
+
 export default async function PricingPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -19,75 +77,111 @@ export default async function PricingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col font-sans selection:bg-indigo-500/30">
       <Navbar user={user ? { email: user.email! } : null} isAdmin={isAdmin} />
-      <main className="flex-1 flex flex-col items-center justify-center py-24 px-4 sm:px-6 lg:px-8">
+      
+      <main className="flex-1 flex flex-col items-center py-20 px-4 sm:px-6 lg:px-8">
+        
+        {/* Header Section */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl text-gray-900 dark:text-white mb-6">
-            Simple, transparent pricing
+          <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl text-slate-900 dark:text-white mb-6">
+            Pricing that scales with you
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400">
-            Everything you need to build your business's digital presence. No hidden fees.
+          <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-400">
+            Everything you need to build your business's digital presence. Simple, transparent, and built for growth.
           </p>
         </div>
 
-        <div className="relative max-w-lg mx-auto w-full">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-3xl blur-xl opacity-20 dark:opacity-40 animate-pulse"></div>
-          
-          <div className="relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-8 sm:p-10 shadow-2xl flex flex-col">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Pro Business</h2>
-              <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
-                Most Popular
-              </span>
-            </div>
-            
-            <div className="mb-6">
-              <div className="flex items-baseline text-5xl font-extrabold text-gray-900 dark:text-white">
-                ₹399
-                <span className="ml-2 text-xl font-medium text-gray-500 dark:text-gray-400">/mo</span>
+        {/* Pricing Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto w-full items-center mb-24">
+          {tiers.map((tier) => (
+            <div 
+              key={tier.id}
+              className={`relative bg-white dark:bg-slate-900 border rounded-3xl p-8 shadow-sm flex flex-col h-full transition-transform ${
+                tier.mostPopular 
+                  ? 'border-indigo-500 ring-2 ring-indigo-500 scale-105 shadow-xl md:-mt-8 z-10 dark:shadow-indigo-500/10' 
+                  : 'border-slate-200 dark:border-slate-800 hover:shadow-lg hover:scale-[1.02]'
+              }`}
+            >
+              {tier.mostPopular && (
+                <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                  <span className="bg-indigo-500 text-white text-xs font-bold uppercase tracking-wider py-1 px-3 rounded-full shadow-sm">
+                    Most Popular
+                  </span>
+                </div>
+              )}
+              
+              <div className="mb-6">
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{tier.name}</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 h-10">{tier.description}</p>
               </div>
-            </div>
+              
+              <div className="mb-6">
+                <div className="flex items-baseline text-4xl font-extrabold text-slate-900 dark:text-white">
+                  {tier.priceMonthly}
+                  <span className="ml-1 text-base font-medium text-slate-500 dark:text-slate-400">/mo</span>
+                </div>
+              </div>
 
-            <div className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/30 rounded-2xl border border-amber-200/50 dark:border-amber-800/50 mb-8">
-              <div className="text-sm font-semibold text-amber-800 dark:text-amber-500 uppercase tracking-wider mb-1">
-                Limited Time Offer
-              </div>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-gray-900 dark:text-white">₹999</span>
-                <span className="text-gray-500 dark:text-gray-400 line-through text-sm">₹1999</span>
-                <span className="text-sm text-gray-600 dark:text-gray-300">One-time setup fee</span>
-              </div>
-              <p className="text-sm text-amber-700/80 dark:text-amber-400/80 mt-1">
-                50% Off setup fee! We build and configure your digital page.
-              </p>
-            </div>
-
-            <ul className="space-y-4 mb-8 flex-1">
-              {[
-                'Custom Digital Business Card',
-                'QR Code Generation',
-                'Menu & Link Management',
-                'Google Review Integration',
-                'Analytics Dashboard',
-                'Priority Email Support'
-              ].map((feature, i) => (
-                <li key={i} className="flex items-center gap-3">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center">
-                    <Check className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+              <div className={`p-4 rounded-2xl mb-8 border ${tier.mostPopular ? 'bg-indigo-50 dark:bg-indigo-950/30 border-indigo-100 dark:border-indigo-900/50' : 'bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-800'}`}>
+                {tier.setupDiscount && (
+                  <div className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-1">
+                    {tier.setupDiscount} Setup
                   </div>
-                  <span className="text-gray-600 dark:text-gray-300">{feature}</span>
-                </li>
-              ))}
-            </ul>
+                )}
+                <div className="flex items-baseline gap-2">
+                  <span className="text-xl font-bold text-slate-900 dark:text-white">{tier.setupFee}</span>
+                  {tier.setupStrikethrough && (
+                    <span className="text-slate-400 dark:text-slate-500 line-through text-sm">{tier.setupStrikethrough}</span>
+                  )}
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Setup fee</span>
+                </div>
+              </div>
 
-            <Link href="/login" className="w-full">
-              <Button size="lg" className="w-full h-12 text-lg bg-gray-900 text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 shadow-xl shadow-gray-900/10 transition-all">
-                Get Started
-              </Button>
-            </Link>
-          </div>
+              <ul className="space-y-4 mb-8 flex-1">
+                {tier.features.map((feature, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <Check className={`w-5 h-5 shrink-0 ${tier.mostPopular ? 'text-indigo-500' : 'text-slate-400 dark:text-slate-500'}`} />
+                    <span className="text-sm text-slate-700 dark:text-slate-300">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <Link href={tier.href} className="w-full mt-auto">
+                <Button 
+                  size="lg" 
+                  className={`w-full h-12 text-base font-semibold transition-all ${
+                    tier.mostPopular
+                      ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-md hover:shadow-lg'
+                      : 'bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100'
+                  }`}
+                >
+                  Get Started
+                </Button>
+              </Link>
+            </div>
+          ))}
         </div>
+
+        {/* FAQs Section */}
+        <div className="w-full max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Frequently Asked Questions</h2>
+          </div>
+          <dl className="space-y-8">
+            {faqs.map((faq, index) => (
+              <div key={index} className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+                <dt className="text-lg font-semibold text-slate-900 dark:text-white mb-2">
+                  {faq.question}
+                </dt>
+                <dd className="text-base text-slate-600 dark:text-slate-400">
+                  {faq.answer}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+
       </main>
     </div>
   )
