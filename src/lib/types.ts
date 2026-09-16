@@ -33,6 +33,15 @@ export interface AdminUser {
   created_at: string;
 }
 
+export interface PrivateFeedback {
+  id: string;
+  restaurant_id: string;
+  rating: number;
+  message: string | null;
+  created_at: string;
+}
+
 export interface RestaurantWithPhotos extends Restaurant {
   food_photos: FoodPhoto[];
+  private_feedback?: PrivateFeedback[];
 }

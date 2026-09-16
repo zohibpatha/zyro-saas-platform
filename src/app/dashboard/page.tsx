@@ -1,11 +1,11 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import type { Restaurant, FoodPhoto } from '@/lib/types'
+import type { Restaurant, FoodPhoto, PrivateFeedback } from '@/lib/types'
 import RestaurantForm from '@/components/restaurant-form'
 import QRCodeGenerator from '@/components/qr-code-generator'
 import FoodPhotosManager from '@/components/food-photos-manager'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { ExternalLink, Link as LinkIcon, Camera, MapPin, QrCode, Sparkles } from 'lucide-react'
+import { ExternalLink, Link as LinkIcon, Camera, MapPin, QrCode, Sparkles, MessageSquareWarning } from 'lucide-react'
 import Link from 'next/link'
 
 export default async function DashboardPage() {
@@ -17,7 +17,7 @@ export default async function DashboardPage() {
   // Fetch owner's restaurants with food photos
   const { data: restaurants } = await supabase
     .from('restaurants')
-    .select('*, food_photos(*)')
+    .select('*, food_photos(*), private_feedback(*)')
     .eq('owner_email', user.email!)
     .order('created_at', { ascending: false })
 
@@ -38,7 +38,7 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      {restaurants.map((restaurant: Restaurant & { food_photos: FoodPhoto[] }) => (
+      {restaurants.map((restaurant: Restaurant & { food_photos: FoodPhoto[], private_feedback: PrivateFeedback[] }) => (
         <div key={restaurant.id} className="grid grid-cols-1 xl:grid-cols-12 gap-8">
           
           {/* Top row: Link & QR Code */}
@@ -121,6 +121,49 @@ export default async function DashboardPage() {
                 restaurantId={restaurant.id}
                 initialPhotos={restaurant.food_photos || []}
               />
+            </CardContent>
+          </Card>
+
+          {/* Private Feedback */}
+          <Card className="xl:col-span-12 border-white/20 dark:border-slate-800/50 shadow-xl shadow-slate-200/50 dark:shadow-black/20 rounded-3xl bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-yellow-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <CardHeader className="relative z-10 pb-8">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center">
+                  <MessageSquareWarning className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                </div>
+                <CardTitle className="text-xl">Private Feedback</CardTitle>
+              </div>
+              <CardDescription className="text-slate-500">Constructive feedback from customers (1-3 stars)</CardDescription>
+            </CardHeader>
+            <CardContent className="relative z-10">
+              {!restaurant.private_feedback || restaurant.private_feedback.length === 0 ? (
+                <div className="text-center py-8 text-slate-500 dark:text-slate-400">
+                  No private feedback received yet.
+                </div>
+              ) : (
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {[...restaurant.private_feedback]
+                    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                    .map((feedback) => (
+                    <div key={feedback.id} className="p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 shadow-sm flex flex-col gap-2">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <svg key={i} className={`w-4 h-4 ${i < feedback.rating ? 'text-amber-500 fill-amber-500' : 'text-slate-300 dark:text-slate-700'}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                          ))}
+                        </div>
+                        <span className="text-xs text-slate-500">
+                          {new Date(feedback.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      {feedback.message && (
+                        <p className="text-sm text-slate-700 dark:text-slate-300 mt-2 italic">"{feedback.message}"</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
