@@ -33,9 +33,14 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
             {user && (
               <div className="hidden sm:flex sm:space-x-1 pl-4 border-l border-gray-200 dark:border-gray-800">
                 {isAdmin ? (
-                  <Link href="/admin" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
-                    <UtensilsCrossed className="w-4 h-4" /> Restaurants
-                  </Link>
+                  <>
+                    <Link href="/admin" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
+                      <LayoutDashboard className="w-4 h-4" /> Businesses
+                    </Link>
+                    <Link href="/dashboard/settings" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
+                      <Hexagon className="w-4 h-4" /> Settings
+                    </Link>
+                  </>
                 ) : (
                   <>
                     <Link href="/dashboard" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
@@ -81,9 +86,14 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
         <div className="sm:hidden absolute top-16 left-4 right-4 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-4 rounded-2xl shadow-xl shadow-black/5 backdrop-blur-xl z-50">
           <div className="space-y-2">
             {user && isAdmin && (
-              <Link href="/admin" className="flex items-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                <UtensilsCrossed className="w-5 h-5" /> Restaurants
-              </Link>
+              <>
+                <Link href="/admin" className="flex items-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                  <LayoutDashboard className="w-5 h-5" /> Businesses
+                </Link>
+                <Link href="/dashboard/settings" className="flex items-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                  <Hexagon className="w-5 h-5" /> Settings
+                </Link>
+              </>
             )}
             {user && !isAdmin && (
               <>
