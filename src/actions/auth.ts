@@ -69,3 +69,21 @@ export async function signInWithOAuth(provider: 'google' | 'github') {
     redirect(data.url)
   }
 }
+
+export async function updatePassword(password: string) {
+  const supabase = await createClient()
+  
+  if (!password || password.length < 6) {
+    return { error: 'Password must be at least 6 characters long' }
+  }
+
+  const { error } = await supabase.auth.updateUser({
+    password: password
+  })
+
+  if (error) {
+    return { error: error.message }
+  }
+
+  return { success: true }
+}
