@@ -1,0 +1,37 @@
+export interface Restaurant {
+  id: string;
+  name: string;
+  slug: string;
+  logo_url: string | null;
+  cover_image: string | null;
+  instagram_url: string | null;
+  google_maps_url: string | null;
+  google_review_url: string | null;
+  website_url: string | null;
+  phone: string | null;
+  whatsapp: string | null;
+  address: string | null;
+  primary_color: string;
+  is_active: boolean;
+  owner_email: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FoodPhoto {
+  id: string;
+  restaurant_id: string;
+  image_url: string;
+  sort_order: number;
+  created_at: string;
+}
+
+export interface AdminUser {
+  id: string;
+  email: string;
+  created_at: string;
+}
+
+export interface RestaurantWithPhotos extends Restaurant {
+  food_photos: FoodPhoto[];
+}
