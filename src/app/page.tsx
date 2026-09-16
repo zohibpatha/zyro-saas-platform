@@ -1,17 +1,12 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { QrCode, Star, Smartphone, ArrowRight } from 'lucide-react'
+import Navbar from '@/components/navbar'
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="px-6 py-4 flex items-center justify-between border-b">
-        <div className="text-2xl font-bold tracking-tight">Zyro</div>
-        <Link href="/login">
-          <Button variant="outline">Sign In</Button>
-        </Link>
-      </header>
-
+      <Navbar />
       <main className="flex-1">
         <section className="py-24 px-6 text-center bg-gradient-to-b from-gray-50 to-white">
           <div className="max-w-3xl mx-auto space-y-8">

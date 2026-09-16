@@ -30,9 +30,12 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
               <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300">Zyro</span>
             </Link>
             
-            {user && (
-              <div className="hidden sm:flex sm:space-x-1 pl-4 border-l border-gray-200 dark:border-gray-800">
-                {isAdmin ? (
+            <div className="hidden sm:flex sm:space-x-1 pl-4 border-l border-gray-200 dark:border-gray-800">
+              <Link href="/pricing" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
+                Pricing
+              </Link>
+              {user && (
+                isAdmin ? (
                   <>
                     <Link href="/admin" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
                       <LayoutDashboard className="w-4 h-4" /> Businesses
@@ -50,9 +53,9 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
                       <Hexagon className="w-4 h-4" /> Settings
                     </Link>
                   </>
-                )}
-              </div>
-            )}
+                )
+              )}
+            </div>
           </div>
           
           <div className="hidden sm:flex sm:items-center sm:gap-4">
@@ -85,6 +88,9 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
       {isOpen && (
         <div className="sm:hidden absolute top-16 left-4 right-4 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 p-4 rounded-2xl shadow-xl shadow-black/5 backdrop-blur-xl z-50">
           <div className="space-y-2">
+            <Link href="/pricing" className="flex items-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+              Pricing
+            </Link>
             {user && isAdmin && (
               <>
                 <Link href="/admin" className="flex items-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
