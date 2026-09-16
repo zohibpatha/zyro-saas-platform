@@ -13,7 +13,7 @@ async function verifyAdmin() {
     .from('admin_users')
     .select('email')
     .eq('email', user.email!)
-    .single()
+    .maybeSingle()
 
   return { user, admin }
 }
@@ -27,7 +27,7 @@ async function verifyAdminOrOwner(restaurantId: string) {
     .from('admin_users')
     .select('email')
     .eq('email', user.email!)
-    .single()
+    .maybeSingle()
 
   if (admin) return { user, isAuthorized: true }
 
@@ -35,7 +35,7 @@ async function verifyAdminOrOwner(restaurantId: string) {
     .from('restaurants')
     .select('owner_email')
     .eq('id', restaurantId)
-    .single()
+    .maybeSingle()
 
   if (restaurant?.owner_email === user.email) return { user, isAuthorized: true }
 
@@ -53,6 +53,7 @@ export async function createRestaurant(formData: FormData) {
 
   const { error } = await supabase.from('restaurants').insert({
     name,
+    business_type: formData.get('business_type') as string,
     slug,
     logo_url: formData.get('logo_url') as string || null,
     cover_image: formData.get('cover_image') as string || null,
@@ -64,13 +65,13 @@ export async function createRestaurant(formData: FormData) {
     whatsapp: formData.get('whatsapp') as string || null,
     address: formData.get('address') as string || null,
     primary_color: (formData.get('primary_color') as string) || '#111111',
-    owner_email: formData.get('owner_email') as string,
+    owner_email: (formData.get('owner_email') as string) || user.email,
   })
 
   if (error) return { error: error.message }
 
   revalidatePath('/admin')
-  redirect('/admin')
+  return { success: true }
 }
 
 export async function updateRestaurant(id: string, formData: FormData) {
@@ -80,6 +81,7 @@ export async function updateRestaurant(id: string, formData: FormData) {
   const supabase = await createClient()
   const updateData: any = {
     name: formData.get('name') as string,
+    business_type: formData.get('business_type') as string,
     slug: formData.get('slug') as string,
     logo_url: formData.get('logo_url') as string || null,
     cover_image: formData.get('cover_image') as string || null,
@@ -121,7 +123,7 @@ export async function toggleRestaurant(id: string) {
     .from('restaurants')
     .select('is_active')
     .eq('id', id)
-    .single()
+    .maybeSingle()
 
   if (!restaurant) return { error: 'Not found' }
 

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
 import AdminActions from './admin-actions'
+import { Plus } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,49 +16,57 @@ export default async function AdminDashboard() {
     .order('created_at', { ascending: false })
 
   if (error) {
-    return <div>Error loading restaurants</div>
+    return <div className="p-8 text-red-500">Error loading restaurants</div>
   }
 
   return (
-    <div className="p-4 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+    <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8 animate-in fade-in duration-500">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Admin Dashboard</h1>
+          <p className="text-sm text-gray-500 mt-1">Manage all businesses across the platform</p>
+        </div>
         <Link href="/admin/create">
-          <Button>Create New Restaurant</Button>
+          <Button className="bg-black text-white hover:bg-gray-800 shadow-sm h-9 px-4 rounded-md text-sm transition-all">
+            <Plus className="w-4 h-4 mr-2" />
+            New Business
+          </Button>
         </Link>
       </div>
 
-      <div className="bg-white rounded-lg shadow">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Slug</TableHead>
-              <TableHead>Owner Email</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+          <TableHeader className="bg-gray-50/50">
+            <TableRow className="border-b border-gray-200 hover:bg-transparent">
+              <TableHead className="h-10 text-xs font-medium text-gray-500 uppercase tracking-wider">Name</TableHead>
+              <TableHead className="h-10 text-xs font-medium text-gray-500 uppercase tracking-wider">Slug</TableHead>
+              <TableHead className="h-10 text-xs font-medium text-gray-500 uppercase tracking-wider">Owner Email</TableHead>
+              <TableHead className="h-10 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</TableHead>
+              <TableHead className="h-10 text-xs font-medium text-gray-500 uppercase tracking-wider text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {restaurants?.map((restaurant) => (
-              <TableRow key={restaurant.id}>
-                <TableCell className="font-medium">{restaurant.name}</TableCell>
-                <TableCell>{restaurant.slug}</TableCell>
-                <TableCell>{restaurant.owner_email}</TableCell>
+              <TableRow key={restaurant.id} className="group border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
+                <TableCell className="font-medium text-gray-900">{restaurant.name}</TableCell>
+                <TableCell className="text-gray-500 text-sm font-mono">{restaurant.slug}</TableCell>
+                <TableCell className="text-gray-600 text-sm">{restaurant.owner_email}</TableCell>
                 <TableCell>
-                  <Badge variant={restaurant.is_active ? 'default' : 'secondary'}>
+                  <Badge variant={restaurant.is_active ? 'default' : 'secondary'} className={`font-normal ${restaurant.is_active ? 'bg-green-50 text-green-700 hover:bg-green-100 border border-green-200' : 'bg-gray-100 text-gray-600 border border-gray-200'}`}>
                     {restaurant.is_active ? 'Active' : 'Inactive'}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">
-                  <AdminActions restaurant={restaurant} />
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                    <AdminActions restaurant={restaurant} />
+                  </div>
                 </TableCell>
               </TableRow>
             ))}
             {restaurants?.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-4">
-                  No restaurants found.
+                <TableCell colSpan={5} className="text-center py-12 text-gray-500 text-sm">
+                  No businesses found. Create your first one.
                 </TableCell>
               </TableRow>
             )}

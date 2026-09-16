@@ -29,7 +29,7 @@ export async function signInWithPassword(formData: FormData) {
       .from('admin_users')
       .select('email')
       .eq('email', user.email)
-      .single()
+      .maybeSingle()
 
     if (adminUser) {
       redirect('/admin')
@@ -40,7 +40,7 @@ export async function signInWithPassword(formData: FormData) {
       .select('id')
       .eq('owner_email', user.email)
       .limit(1)
-      .single()
+      .maybeSingle()
 
     if (restaurant) {
       redirect('/dashboard')
@@ -55,4 +55,17 @@ export async function signOut() {
   await supabase.auth.signOut()
   revalidatePath('/', 'layout')
   redirect('/login')
+}
+
+export async function signInWithOAuth(provider: 'google' | 'github') {
+  const supabase = await createClient()
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+    },
+  })
+  if (data.url) {
+    redirect(data.url)
+  }
 }

@@ -2,6 +2,7 @@ export interface Restaurant {
   id: string;
   name: string;
   slug: string;
+  business_type: string;
   logo_url: string | null;
   cover_image: string | null;
   instagram_url: string | null;

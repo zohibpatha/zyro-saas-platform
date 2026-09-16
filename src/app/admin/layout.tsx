@@ -18,7 +18,7 @@ export default async function AdminLayout({
     .from('admin_users')
     .select('email')
     .eq('email', user.email!)
-    .single()
+    .maybeSingle()
 
   if (!admin) {
     redirect('/login')

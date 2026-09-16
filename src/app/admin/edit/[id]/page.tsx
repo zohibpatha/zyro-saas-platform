@@ -11,7 +11,7 @@ export default async function EditRestaurantPage({ params }: { params: Promise<{
     .from('restaurants')
     .select('*, food_photos(*)')
     .eq('id', id)
-    .single()
+    .maybeSingle()
 
   if (!restaurant) {
     notFound()
