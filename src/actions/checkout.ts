@@ -22,10 +22,10 @@ export async function submitManualPayment(formData: FormData) {
   const instagramUrl = formData.get('instagram_url') as string || null
   const websiteUrl = formData.get('website_url') as string || null
   const whatsapp = formData.get('whatsapp') as string
-  const utr = formData.get('utr') as string
+  const utr = formData.get('utr') as string || 'not-provided'
   const plan = formData.get('plan') as string || 'pro'
 
-  if (!businessName || !whatsapp || !utr || !googleReviewUrl) {
+  if (!businessName || !whatsapp || !googleReviewUrl) {
     return { error: 'Please fill in all required fields.' }
   }
 

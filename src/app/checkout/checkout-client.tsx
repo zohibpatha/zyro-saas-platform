@@ -233,20 +233,13 @@ export default function CheckoutClient() {
           <input type="hidden" name="plan" value="pro" />
 
           <div className="space-y-6 max-w-lg mx-auto">
-            <div className="space-y-2">
-              <Label htmlFor="utr">UTR / Transaction Reference Number *</Label>
-              <Input 
-                id="utr" 
-                name="utr" 
-                placeholder="e.g. 123456789012" 
-                required 
-                className="font-mono h-11 rounded-xl"
-              />
-              <p className="text-xs text-slate-500">12-digit number found in your UPI app&apos;s transaction details</p>
+            <div className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-sm p-4 rounded-xl border border-amber-100 dark:border-amber-900/50 flex items-start gap-3">
+              <ShieldCheck className="w-5 h-5 shrink-0 mt-0.5" />
+              <span>UPI se ₹999 pay karein, phir niche &quot;Activate&quot; button dabayein. Hum WhatsApp par confirm kar denge!</span>
             </div>
 
             <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white h-12 text-base font-semibold rounded-xl transition-all hover:-translate-y-0.5 shadow-lg shadow-indigo-500/20" disabled={loading}>
-              {loading ? 'Setting up your business...' : 'Submit & Activate My Business'}
+              {loading ? 'Setting up your business...' : 'Maine Pay Kar Diya — Activate Karo! ✅'}
             </Button>
           </div>
         </div>
