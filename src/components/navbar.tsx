@@ -34,9 +34,6 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
               <Link href="/pricing" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
                 Pricing
               </Link>
-              <Link href="/portal" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-900/50 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
-                Partner Portal
-              </Link>
               {user && (
                 isAdmin ? (
                   <>
@@ -93,9 +90,6 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
           <div className="space-y-2">
             <Link href="/pricing" className="flex items-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
               Pricing
-            </Link>
-            <Link href="/portal" className="flex items-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50">
-              Partner Portal
             </Link>
             {user && isAdmin && (
               <>

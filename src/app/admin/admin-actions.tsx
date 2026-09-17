@@ -61,6 +61,29 @@ export default function AdminActions({ restaurant }: { restaurant: Restaurant })
         </DialogContent>
       </Dialog>
 
+      <Button 
+        variant="outline" 
+        size="icon" 
+        title="Copy Dashboard Link"
+        onClick={async () => {
+          const url = `${window.location.origin}/manage/${restaurant.slug}`
+          await navigator.clipboard.writeText(url)
+          alert('Dashboard link copied to clipboard!')
+        }}
+      >
+        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </Button>
+
+      <a href={`/manage/${restaurant.slug}`} target="_blank" rel="noopener noreferrer">
+        <Button variant="outline" size="icon" title="View Dashboard">
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        </Button>
+      </a>
+
       <a href={`/r/${restaurant.slug}`} target="_blank" rel="noopener noreferrer">
         <Button variant="outline" size="icon" title="View Public Page">
           <ExternalLink className="h-4 w-4" />

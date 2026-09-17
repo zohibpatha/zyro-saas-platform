@@ -23,25 +23,6 @@ export default async function ClientManagePage({ params }: { params: Promise<{ s
     notFound()
   }
 
-  if (!restaurant.is_active) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4">
-        <div className="max-w-md w-full bg-white dark:bg-slate-900 rounded-3xl p-8 text-center shadow-xl border border-slate-100 dark:border-slate-800">
-          <div className="w-16 h-16 bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">Verification Pending</h2>
-          <p className="text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
-            Your business profile has been created, but your payment is currently being verified. 
-            This usually takes a few hours. Check back later!
-          </p>
-        </div>
-      </div>
-    )
-  }
-
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
   return (

@@ -8,7 +8,7 @@ const tiers = [
   {
     name: 'Starter',
     id: 'tier-starter',
-    href: '/checkout?plan=starter',
+    href: '#',
     priceMonthly: '₹199',
     setupFee: '₹499',
     setupStrikethrough: null,
@@ -20,7 +20,7 @@ const tiers = [
   {
     name: 'Pro',
     id: 'tier-pro',
-    href: '/checkout?plan=pro',
+    href: '#',
     priceMonthly: '₹399',
     setupFee: '₹999',
     setupStrikethrough: '₹1999',
@@ -32,7 +32,7 @@ const tiers = [
   {
     name: 'Elite',
     id: 'tier-elite',
-    href: '/checkout?plan=elite',
+    href: '#',
     priceMonthly: '₹699',
     setupFee: '₹1499',
     setupStrikethrough: null,
