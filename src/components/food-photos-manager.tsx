@@ -3,18 +3,25 @@
 import { useState } from 'react'
 import ImageUpload from './image-upload'
 import { addFoodPhoto, deleteFoodPhoto } from '@/actions/restaurant'
+import { addFoodPhotoBySlug, deleteFoodPhotoBySlug } from '@/actions/manage'
 import type { FoodPhoto } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { Trash2 } from 'lucide-react'
 import Image from 'next/image'
 
-export default function FoodPhotosManager({ restaurantId, initialPhotos }: { restaurantId: string, initialPhotos: FoodPhoto[] }) {
+export default function FoodPhotosManager({ restaurantId, initialPhotos, isClientManage, slug }: { restaurantId: string, initialPhotos: FoodPhoto[], isClientManage?: boolean, slug?: string }) {
   const [photos, setPhotos] = useState<FoodPhoto[]>(initialPhotos)
   const [isDeleting, setIsDeleting] = useState<string | null>(null)
 
   const handleUpload = async (url: string) => {
     if (!url) return
-    const result = await addFoodPhoto(restaurantId, url)
+    let result
+    if (isClientManage && slug) {
+      result = await addFoodPhotoBySlug(slug, url)
+    } else {
+      result = await addFoodPhoto(restaurantId, url)
+    }
+    
     if (result.photo) {
       setPhotos([...photos, result.photo])
     }
@@ -22,7 +29,11 @@ export default function FoodPhotosManager({ restaurantId, initialPhotos }: { res
 
   const handleDelete = async (photoId: string) => {
     setIsDeleting(photoId)
-    await deleteFoodPhoto(photoId, restaurantId)
+    if (isClientManage && slug) {
+      await deleteFoodPhotoBySlug(photoId, slug)
+    } else {
+      await deleteFoodPhoto(photoId, restaurantId)
+    }
     setPhotos(photos.filter(p => p.id !== photoId))
     setIsDeleting(null)
   }
@@ -53,7 +64,7 @@ export default function FoodPhotosManager({ restaurantId, initialPhotos }: { res
         ))}
         
         <div className="aspect-square rounded-xl border border-dashed border-gray-300 hover:border-gray-400 hover:bg-gray-50/50 transition-colors flex flex-col items-center justify-center p-4">
-          <ImageUpload onUpload={handleUpload} restaurantId={restaurantId} />
+          <ImageUpload onUpload={handleUpload} restaurantId={restaurantId} isClientManage={isClientManage} slug={slug} />
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { uploadImage } from '@/actions/restaurant'
+import { uploadImagePublic } from '@/actions/manage'
 import Image from 'next/image'
 import { Loader2, UploadCloud, X } from 'lucide-react'
 
@@ -10,9 +11,11 @@ interface ImageUploadProps {
   onUpload: (url: string) => void
   currentUrl?: string
   restaurantId?: string
+  isClientManage?: boolean
+  slug?: string
 }
 
-export default function ImageUpload({ onUpload, currentUrl, restaurantId }: ImageUploadProps) {
+export default function ImageUpload({ onUpload, currentUrl, restaurantId, isClientManage, slug }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [error, setError] = useState<string>('')
 
@@ -35,7 +38,13 @@ export default function ImageUpload({ onUpload, currentUrl, restaurantId }: Imag
     }
 
     try {
-      const result = await uploadImage(formData)
+      let result
+      if (isClientManage) {
+        if (slug) formData.append('slug', slug)
+        result = await uploadImagePublic(formData)
+      } else {
+        result = await uploadImage(formData)
+      }
       if (result.error) {
         setError(result.error)
       } else if (result.url) {

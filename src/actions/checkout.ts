@@ -108,7 +108,7 @@ export async function submitManualPayment(formData: FormData) {
     // 3. Generate the URLs
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
     const qrPageUrl = `${siteUrl}/r/${restaurant.slug}`
-    const dashboardUrl = `${siteUrl}/r/${restaurant.slug}` // Public QR page as their "dashboard" for now
+    const dashboardUrl = `${siteUrl}/manage/${restaurant.slug}`
 
     return { 
       success: true, 

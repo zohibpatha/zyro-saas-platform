@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { createRestaurant, updateRestaurant } from '@/actions/restaurant'
+import { updateRestaurantBySlug } from '@/actions/manage'
 import ImageUpload from '@/components/image-upload'
 import type { Restaurant } from '@/lib/types'
 import { useRouter } from 'next/navigation'
@@ -30,7 +31,7 @@ const restaurantSchema = z.object({
 
 type FormValues = z.infer<typeof restaurantSchema>
 
-export default function RestaurantForm({ restaurant, isAdmin }: { restaurant?: Restaurant, isAdmin?: boolean }) {
+export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: { restaurant?: Restaurant, isAdmin?: boolean, isClientManage?: boolean }) {
   const router = useRouter()
   const [logoUrl, setLogoUrl] = useState(restaurant?.logo_url || '')
   const [coverImageUrl, setCoverImageUrl] = useState(restaurant?.cover_image || '')
@@ -71,7 +72,15 @@ export default function RestaurantForm({ restaurant, isAdmin }: { restaurant?: R
     if (coverImageUrl) formData.append('cover_image', coverImageUrl)
 
     try {
-      if (restaurant) {
+      if (isClientManage && restaurant?.slug) {
+        const result = await updateRestaurantBySlug(restaurant.slug, formData)
+        if (result?.error) {
+          alert(result.error)
+          return
+        }
+        alert('Changes saved successfully!')
+        router.refresh()
+      } else if (restaurant) {
         const result = await updateRestaurant(restaurant.id, formData)
         if (result?.error) {
           alert(result.error)
@@ -212,6 +221,8 @@ export default function RestaurantForm({ restaurant, isAdmin }: { restaurant?: R
               currentUrl={logoUrl} 
               onUpload={setLogoUrl} 
               restaurantId={restaurant?.id} 
+              isClientManage={isClientManage}
+              slug={restaurant?.slug}
             />
           </div>
         </div>
@@ -222,7 +233,9 @@ export default function RestaurantForm({ restaurant, isAdmin }: { restaurant?: R
             <ImageUpload 
               currentUrl={coverImageUrl} 
               onUpload={setCoverImageUrl} 
-              restaurantId={restaurant?.id} 
+              restaurantId={restaurant?.id}
+              isClientManage={isClientManage}
+              slug={restaurant?.slug}
             />
           </div>
         </div>
