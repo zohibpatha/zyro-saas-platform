@@ -47,18 +47,18 @@ export default function CheckoutClient() {
   if (success) {
     return (
       <div className="flex flex-col items-center justify-center p-8 md:p-12 text-center bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-800">
-        <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-green-500/20">
+        <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center mb-6 shadow-lg shadow-green-500/20 animate-bounce">
           <CheckCircle2 className="w-10 h-10 text-white" />
         </div>
         <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-3">Your Business is Live! 🎉</h2>
         <p className="text-slate-600 dark:text-slate-400 max-w-md mb-8">
-          Your digital profile & QR code are ready. Our team will verify your payment within 2 hours on WhatsApp.
+          Aapka digital profile aur QR code turant activate ho gaya hai! Niche apna link copy karein aur QR code print karke apni shop par lagayein.
         </p>
         
         {qrPageUrl && (
           <div className="w-full max-w-md space-y-4 mb-8">
             <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-700">
-              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider">Your Public QR Page Link</p>
+              <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-3 uppercase tracking-wider">Your Live QR Page</p>
               <div className="flex items-center gap-2 bg-white dark:bg-slate-900 rounded-xl p-3 border border-slate-200 dark:border-slate-700">
                 <Link2 className="w-4 h-4 text-indigo-500 shrink-0" />
                 <span className="text-sm text-indigo-600 dark:text-indigo-400 font-mono truncate flex-1">{qrPageUrl}</span>
@@ -66,16 +66,18 @@ export default function CheckoutClient() {
                   {copied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4 text-slate-400" />}
                 </button>
               </div>
-              <p className="text-xs text-slate-500 mt-2">Share this link or print the QR code to display at your business!</p>
+              <p className="text-xs text-green-600 font-medium mt-2">✅ Live & Active — Share this link or print QR code!</p>
             </div>
           </div>
         )}
         
-        {dashboardUrl && (
-          <a href={dashboardUrl} className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3.5 rounded-xl font-semibold text-base transition-all hover:-translate-y-0.5 shadow-lg shadow-indigo-500/20">
-            Open Your Dashboard →
-          </a>
-        )}
+        <div className="flex flex-col sm:flex-row gap-3 w-full max-w-md">
+          {qrPageUrl && (
+            <a href={qrPageUrl} target="_blank" className="flex-1 inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3.5 rounded-xl font-semibold text-base transition-all hover:-translate-y-0.5 shadow-lg shadow-indigo-500/20">
+              Open My Page →
+            </a>
+          )}
+        </div>
       </div>
     )
   }
@@ -233,13 +235,13 @@ export default function CheckoutClient() {
           <input type="hidden" name="plan" value="pro" />
 
           <div className="space-y-6 max-w-lg mx-auto">
-            <div className="bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-sm p-4 rounded-xl border border-amber-100 dark:border-amber-900/50 flex items-start gap-3">
+            <div className="bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 text-sm p-4 rounded-xl border border-green-100 dark:border-green-900/50 flex items-start gap-3">
               <ShieldCheck className="w-5 h-5 shrink-0 mt-0.5" />
-              <span>UPI se ₹999 pay karein, phir niche &quot;Activate&quot; button dabayein. Hum WhatsApp par confirm kar denge!</span>
+              <span>UPI se ₹999 pay karein, phir niche button dabayein. Aapka business <strong>turant activate</strong> ho jayega!</span>
             </div>
 
             <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 text-white h-12 text-base font-semibold rounded-xl transition-all hover:-translate-y-0.5 shadow-lg shadow-indigo-500/20" disabled={loading}>
-              {loading ? 'Setting up your business...' : 'Maine Pay Kar Diya — Activate Karo! ✅'}
+              {loading ? '⚡ Activating your business...' : '✅ Maine Pay Kar Diya — Activate Karo!'}
             </Button>
           </div>
         </div>
