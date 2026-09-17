@@ -23,10 +23,10 @@ export async function submitManualPayment(formData: FormData) {
     const instagramUrl = formData.get('instagram_url') as string || null
     const websiteUrl = formData.get('website_url') as string || null
     const whatsapp = (formData.get('whatsapp') as string)?.trim()
-    const utr = formData.get('utr') as string || 'not-provided'
+    const utr = (formData.get('utr') as string)?.trim()
     const plan = formData.get('plan') as string || 'pro'
 
-    if (!businessName || !whatsapp || !googleReviewUrl) {
+    if (!businessName || !whatsapp || !googleReviewUrl || !utr) {
       return { error: 'Please fill in all required fields.' }
     }
 
@@ -95,7 +95,7 @@ export async function submitManualPayment(formData: FormData) {
         whatsapp: whatsapp,
         owner_email: ownerIdentifier,
         primary_color: '#111111',
-        is_active: true,
+        is_active: false, // Default to false until admin verifies payment
       })
       .select('id, slug')
       .single()

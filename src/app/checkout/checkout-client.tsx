@@ -43,54 +43,39 @@ export default function CheckoutClient() {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  // SUCCESS STATE — Premium Linear/Stripe style
+  // SUCCESS STATE — Pending Verification
   if (success) {
     return (
       <div className="flex flex-col items-center justify-center p-8 md:p-14 text-center bg-white dark:bg-[#0a0a0a] rounded-2xl shadow-[0_0_40px_rgba(0,0,0,0.05)] dark:shadow-[0_0_40px_rgba(0,0,0,0.2)] border border-slate-100 dark:border-slate-800/60 max-w-2xl mx-auto backdrop-blur-xl">
-        <div className="w-16 h-16 bg-gradient-to-tr from-emerald-400 to-emerald-500 rounded-full flex items-center justify-center mb-8 shadow-xl shadow-emerald-500/20 transform hover:scale-105 transition-transform duration-500">
-          <CheckCircle2 className="w-8 h-8 text-white" strokeWidth={2.5} />
+        <div className="w-16 h-16 bg-gradient-to-tr from-amber-400 to-amber-500 rounded-full flex items-center justify-center mb-8 shadow-xl shadow-amber-500/20 transform hover:scale-105 transition-transform duration-500">
+          <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
         </div>
-        <h2 className="text-3xl font-medium tracking-tight text-slate-900 dark:text-slate-50 mb-4">Your Business is Live</h2>
+        <h2 className="text-3xl font-medium tracking-tight text-slate-900 dark:text-slate-50 mb-4">Verification Pending</h2>
         <p className="text-slate-500 dark:text-slate-400 max-w-md mb-10 text-[15px] leading-relaxed">
-          Your digital profile and QR code have been activated instantly. Copy your unique link below or print the QR code for your storefront.
+          We have received your payment details. Our team is verifying your payment. Once verified, your digital profile and QR code will be activated.
         </p>
         
-        {qrPageUrl && (
+        {dashboardUrl && (
           <div className="w-full max-w-md space-y-4 mb-10">
             <div className="bg-slate-50/50 dark:bg-slate-900/50 rounded-xl p-5 border border-slate-100 dark:border-slate-800/80 backdrop-blur-sm">
-              <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 mb-3 uppercase tracking-widest">Public QR Profile</p>
+              <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 mb-3 uppercase tracking-widest">Dashboard URL (Save this link)</p>
               <div className="flex items-center gap-3 bg-white dark:bg-[#0a0a0a] rounded-lg p-3 border border-slate-200/60 dark:border-slate-800/60 shadow-sm">
-                <div className="bg-indigo-50 dark:bg-indigo-500/10 p-2 rounded-md">
-                  <Link2 className="w-4 h-4 text-indigo-500" />
+                <div className="bg-amber-50 dark:bg-amber-500/10 p-2 rounded-md">
+                  <Link2 className="w-4 h-4 text-amber-500" />
                 </div>
-                <span className="text-sm text-slate-700 dark:text-slate-300 font-medium font-mono truncate flex-1">{qrPageUrl}</span>
-                <button onClick={() => copyLink(qrPageUrl)} className="shrink-0 p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500/50">
+                <span className="text-sm text-slate-700 dark:text-slate-300 font-medium font-mono truncate flex-1">{dashboardUrl}</span>
+                <button onClick={() => copyLink(dashboardUrl)} className="shrink-0 p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500/50">
                   {copied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300" />}
                 </button>
               </div>
-              <div className="flex items-center justify-center gap-1.5 mt-4 text-[13px] text-emerald-600 dark:text-emerald-400 font-medium">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
-                Live & Active
-              </div>
+              <p className="mt-3 text-xs text-amber-600 dark:text-amber-500 font-medium text-left">
+                Keep this link safe. You will manage your menu from here once approved.
+              </p>
             </div>
           </div>
         )}
-        
-        <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
-          {qrPageUrl && (
-            <a href={qrPageUrl} target="_blank" className="flex-1 inline-flex items-center justify-center gap-2 bg-slate-900 dark:bg-white hover:bg-slate-800 dark:hover:bg-slate-100 text-white dark:text-slate-900 px-6 py-3 rounded-lg font-medium text-[15px] transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-900/50">
-              View Public Page <ChevronRight className="w-4 h-4" />
-            </a>
-          )}
-          {dashboardUrl && (
-            <a href={dashboardUrl} className="flex-1 inline-flex items-center justify-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 px-6 py-3 rounded-lg font-medium text-[15px] transition-all focus:outline-none focus:ring-2 focus:ring-slate-200">
-              Go to Dashboard
-            </a>
-          )}
-        </div>
       </div>
     )
   }
@@ -288,6 +273,14 @@ export default function CheckoutClient() {
           </div>
 
           <input type="hidden" name="plan" value="pro" />
+
+          <div className="space-y-2.5 mt-6 mb-8 max-w-sm">
+            <Label htmlFor="utr" className="text-[13px] font-medium text-slate-700 dark:text-slate-300">
+              UPI Reference Number (UTR) <span className="text-red-500">*</span>
+            </Label>
+            <Input id="utr" name="utr" placeholder="e.g. 123456789012" required className="h-11 rounded-lg border-slate-200 dark:border-slate-800 bg-transparent text-[15px] focus:ring-1 focus:ring-slate-900 dark:focus:ring-white transition-shadow" />
+            <p className="text-[12px] text-slate-500">12-digit reference number from your payment app.</p>
+          </div>
 
           <div className="border-t border-slate-100 dark:border-slate-800/80 pt-8 mt-4">
             <Button type="submit" className="w-full bg-slate-900 dark:bg-white hover:bg-slate-800 dark:hover:bg-slate-100 text-white dark:text-slate-900 h-12 text-[15px] font-medium rounded-lg transition-all focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 dark:focus:ring-offset-slate-900 dark:focus:ring-white relative overflow-hidden group" disabled={loading}>

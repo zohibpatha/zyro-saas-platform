@@ -119,20 +119,52 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
             <p className="text-sm font-bold text-slate-800 text-center px-4">
               {getSuccessMessage()}
             </p>
-            <a
-              href={formatUrl(restaurant.google_review_url)}
-              target="_blank"
-              rel="noopener noreferrer"
+            
+            <div className="relative">
+              <textarea
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+                placeholder="Write your review here..."
+                className="w-full bg-white/80 border border-slate-200 rounded-2xl p-4 pr-10 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent resize-none h-24 shadow-inner"
+              />
+              {!feedback && (
+                <button 
+                  onClick={() => {
+                    const type = (restaurant.business_type || 'business').toLowerCase()
+                    const templates = [
+                      `Amazing experience at ${restaurant.name}! The service was top-notch and I highly recommend this ${type}.`,
+                      `Had a fantastic time here. Great ${type}, excellent staff, and wonderful atmosphere. 5 stars!`,
+                      `Absolutely loved my visit to ${restaurant.name}. Everything was perfect and the quality is outstanding.`
+                    ]
+                    setFeedback(templates[Math.floor(Math.random() * templates.length)])
+                  }}
+                  className="absolute bottom-3 right-3 text-[10px] bg-amber-100 text-amber-700 px-2 py-1 rounded-full font-bold hover:bg-amber-200 transition-colors"
+                >
+                  Auto-fill
+                </button>
+              )}
+            </div>
+
+            <button
+              onClick={async () => {
+                if (feedback.trim()) {
+                  await navigator.clipboard.writeText(feedback)
+                }
+                window.open(formatUrl(restaurant.google_review_url), '_blank')
+              }}
               className="group relative w-full rounded-2xl p-[2px] overflow-hidden hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 animate-pulse blur-md opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="absolute inset-0 bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 opacity-100" />
               <div className="relative h-14 w-full bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
                 <Globe className="h-5 w-5 text-white" />
-                <span className="text-white font-black tracking-wide">Post on Google</span>
+                <span className="text-white font-black tracking-wide">Copy & Post on Google</span>
                 <ChevronRight className="text-white h-5 w-5 opacity-80 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
               </div>
-            </a>
+            </button>
+            <p className="text-[11px] text-center text-slate-400 font-medium px-4">
+              Clicking this will copy your text and open Google Maps so you can simply paste and post!
+            </p>
           </div>
         )}
       </div>
