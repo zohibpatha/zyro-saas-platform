@@ -20,7 +20,7 @@ const tiers = [
   {
     name: 'Pro',
     id: 'tier-pro',
-    href: '/login',
+    href: '/checkout?plan=pro',
     priceMonthly: '₹399',
     setupFee: '₹999',
     setupStrikethrough: '₹1999',
