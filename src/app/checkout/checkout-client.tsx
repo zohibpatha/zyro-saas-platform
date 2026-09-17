@@ -192,13 +192,14 @@ export default function CheckoutClient() {
           </button>
 
           <div className="flex flex-col md:flex-row items-center gap-8 mb-8 p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700">
-            {/* QR Code Placeholder */}
+            {/* QR Code */}
             <div className="shrink-0 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col items-center">
-              <div className="w-40 h-40 bg-slate-100 dark:bg-slate-900 rounded-xl flex items-center justify-center mb-3 border border-dashed border-slate-300 dark:border-slate-700">
-                <QrCode className="w-14 h-14 text-slate-400" />
+              <div className="relative w-48 h-48 rounded-xl overflow-hidden mb-3 border border-slate-200 dark:border-slate-700">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/images/payment-qr.jpg" alt="UPI QR Code" className="w-full h-full object-cover" />
               </div>
-              <p className="font-mono text-sm font-semibold text-slate-900 dark:text-white mb-1">your-upi-id@bank</p>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Scan to pay</p>
+              <p className="font-mono text-sm font-semibold text-slate-900 dark:text-white mb-1">Mr Joyeb Khan</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Scan to pay PhonePe</p>
             </div>
 
             {/* Payment Details — ONLY Setup Fee */}
