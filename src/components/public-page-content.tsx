@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import type { RestaurantWithPhotos } from '@/lib/types'
-import { Star, MapPin, Instagram, Phone, MessageCircle, Globe, ChevronRight, Loader2, CheckCircle2, Gift } from 'lucide-react'
+import { Star, MapPin, Instagram, Phone, MessageCircle, Globe, ChevronRight, Loader2, CheckCircle2, Gift, Activity } from 'lucide-react'
 import { submitPrivateFeedback } from '@/actions/feedback'
 import { claimLoyaltyStamp } from '@/actions/loyalty'
 
@@ -59,6 +59,8 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
     }
   }
 
+  const isGym = (restaurant.business_type || '').toLowerCase().includes('gym') || (restaurant.business_type || '').toLowerCase().includes('fitness')
+
   return (
     <div className="flex flex-col gap-4 w-full">
       {/* Business Type Badge */}
@@ -71,30 +73,34 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
       )}
 
       {/* Loyalty Stamp Card */}
-      <div className="w-full bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden flex flex-col items-center">
+      <div className={`w-full ${isGym ? 'bg-gradient-to-br from-orange-500 to-red-600' : 'bg-gradient-to-br from-indigo-500 to-purple-600'} rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden flex flex-col items-center`}>
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-indigo-900/30 rounded-full blur-2xl" />
+        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-black/10 rounded-full blur-2xl" />
         
-        <Gift className="w-10 h-10 text-white mb-2" />
-        <h3 className="font-extrabold text-xl mb-1 text-center">Loyalty Rewards</h3>
+        {isGym ? <Activity className="w-10 h-10 text-white mb-2" /> : <Gift className="w-10 h-10 text-white mb-2" />}
+        <h3 className="font-extrabold text-xl mb-1 text-center">
+          {isGym ? 'Workout Tracker' : 'Loyalty Rewards'}
+        </h3>
         
         {loyaltyVisits === null ? (
           <>
-            <p className="text-sm text-indigo-100 mb-6 text-center">Enter your WhatsApp number to collect a visit stamp!</p>
+            <p className="text-sm text-white/80 mb-6 text-center">
+              {isGym ? 'Enter your WhatsApp number to log your attendance!' : 'Enter your WhatsApp number to collect a visit stamp!'}
+            </p>
             <div className="flex w-full max-w-sm gap-2">
               <input
                 type="tel"
                 placeholder="WhatsApp Number"
                 value={loyaltyPhone}
                 onChange={(e) => setLoyaltyPhone(e.target.value)}
-                className="flex-1 bg-white/20 border border-white/30 rounded-xl px-4 py-3 text-white placeholder:text-indigo-200 outline-none focus:bg-white/30 transition-all font-medium"
+                className="flex-1 bg-white/20 border border-white/30 rounded-xl px-4 py-3 text-white placeholder:text-white/60 outline-none focus:bg-white/30 transition-all font-medium"
               />
               <button
                 onClick={handleClaimLoyalty}
                 disabled={isClaiming}
-                className="bg-white text-indigo-600 px-5 rounded-xl font-bold hover:bg-indigo-50 active:scale-95 transition-all flex items-center justify-center min-w-[80px]"
+                className={`bg-white ${isGym ? 'text-red-600' : 'text-indigo-600'} px-5 rounded-xl font-bold hover:bg-white/90 active:scale-95 transition-all flex items-center justify-center min-w-[80px]`}
               >
-                {isClaiming ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Claim'}
+                {isClaiming ? <Loader2 className="w-5 h-5 animate-spin" /> : (isGym ? 'Log In' : 'Claim')}
               </button>
             </div>
           </>
@@ -110,16 +116,16 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
                       : 'bg-white/10 text-white/20'
                   }`}
                 >
-                  {i < (loyaltyVisits % 5 === 0 && loyaltyVisits > 0 ? 5 : loyaltyVisits % 5) ? '★' : '○'}
+                  {isGym ? (i < (loyaltyVisits % 5 === 0 && loyaltyVisits > 0 ? 5 : loyaltyVisits % 5) ? '🔥' : '○') : (i < (loyaltyVisits % 5 === 0 && loyaltyVisits > 0 ? 5 : loyaltyVisits % 5) ? '★' : '○')}
                 </div>
               ))}
             </div>
             <p className="text-center font-bold text-lg">
               {loyaltyVisits % 5 === 0 
-                ? "🎉 You've unlocked a reward!" 
-                : `${5 - (loyaltyVisits % 5)} visits left for a reward!`}
+                ? (isGym ? "🔥 5-Day Streak Hit!" : "🎉 You've unlocked a reward!")
+                : (isGym ? `${loyaltyVisits % 5} Day Streak! Keep going 💪` : `${5 - (loyaltyVisits % 5)} visits left for a reward!`)}
             </p>
-            <p className="text-xs text-indigo-200 mt-1">Total visits: {loyaltyVisits}</p>
+            <p className="text-xs text-white/70 mt-1">Total {isGym ? 'workouts' : 'visits'}: {loyaltyVisits}</p>
           </div>
         )}
       </div>
