@@ -60,7 +60,8 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
   }
 
   const isGym = (restaurant.business_type || '').toLowerCase().includes('gym') || (restaurant.business_type || '').toLowerCase().includes('fitness')
-  const isHotel = (restaurant.business_type || '').toLowerCase().includes('hotel') || (restaurant.business_type || '').toLowerCase().includes('resort') || (restaurant.business_type || '').toLowerCase().includes('homestay')
+  const isHotelAndRestaurant = restaurant.business_type === 'Hotel & Restaurant'
+  const isHotel = ((restaurant.business_type || '').toLowerCase().includes('hotel') || (restaurant.business_type || '').toLowerCase().includes('resort') || (restaurant.business_type || '').toLowerCase().includes('homestay')) && !isHotelAndRestaurant
   const targetStamps = restaurant.reward_stamps || 5
 
   return (
@@ -75,13 +76,13 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
       )}
 
       {/* Loyalty Stamp Card */}
-      <div className={`w-full ${isGym ? 'bg-gradient-to-br from-orange-500 to-red-600' : isHotel ? 'bg-gradient-to-br from-emerald-600 to-teal-800' : 'bg-gradient-to-br from-indigo-500 to-purple-600'} rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden flex flex-col items-center`}>
+      <div className={`w-full ${isGym ? 'bg-gradient-to-br from-orange-500 to-red-600' : (isHotel || isHotelAndRestaurant) ? 'bg-gradient-to-br from-emerald-600 to-teal-800' : 'bg-gradient-to-br from-indigo-500 to-purple-600'} rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden flex flex-col items-center`}>
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
         <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-black/10 rounded-full blur-2xl" />
         
-        {isGym ? <Activity className="w-10 h-10 text-white mb-2" /> : isHotel ? <Crown className="w-10 h-10 text-amber-300 mb-2" /> : <Gift className="w-10 h-10 text-white mb-2" />}
+        {isGym ? <Activity className="w-10 h-10 text-white mb-2" /> : (isHotel || isHotelAndRestaurant) ? <Crown className="w-10 h-10 text-amber-300 mb-2" /> : <Gift className="w-10 h-10 text-white mb-2" />}
         <h3 className="font-extrabold text-xl mb-1 text-center">
-          {isGym ? 'Workout Tracker' : isHotel ? 'VIP Guest Club' : 'Loyalty Rewards'}
+          {isGym ? 'Workout Tracker' : isHotel ? 'VIP Guest Club' : isHotelAndRestaurant ? 'Guest & Diner VIP' : 'Loyalty Rewards'}
         </h3>
         
         {loyaltyVisits === null ? (
@@ -100,9 +101,9 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
               <button
                 onClick={handleClaimLoyalty}
                 disabled={isClaiming}
-                className={`bg-white ${isGym ? 'text-red-600' : isHotel ? 'text-emerald-700' : 'text-indigo-600'} px-5 rounded-xl font-bold hover:bg-white/90 active:scale-95 transition-all flex items-center justify-center min-w-[80px]`}
+                className={`bg-white ${isGym ? 'text-red-600' : (isHotel || isHotelAndRestaurant) ? 'text-emerald-700' : 'text-indigo-600'} px-5 rounded-xl font-bold hover:bg-white/90 active:scale-95 transition-all flex items-center justify-center min-w-[80px]`}
               >
-                {isClaiming ? <Loader2 className="w-5 h-5 animate-spin" /> : (isGym ? 'Log In' : isHotel ? 'Join' : 'Claim')}
+                {isClaiming ? <Loader2 className="w-5 h-5 animate-spin" /> : (isGym ? 'Log In' : isHotel ? 'Join' : isHotelAndRestaurant ? 'Join & Claim' : 'Claim')}
               </button>
             </div>
           </>

@@ -129,8 +129,9 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
               <select id="business_type" {...register('business_type')} className={`w-full ${inputClasses}`}>
                 <option value="Restaurant">Restaurant</option>
                 <option value="Cafe">Cafe</option>
-                <option value="Gym">Gym</option>
+                <option value="Hotel & Restaurant">Hotel & Restaurant</option>
                 <option value="Hotel">Hotel</option>
+                <option value="Gym">Gym / Fitness</option>
                 <option value="Salon">Salon</option>
                 <option value="Other">Other</option>
               </select>
