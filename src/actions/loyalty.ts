@@ -1,4 +1,4 @@
-﻿'use server'
+'use server'
 
 import { createClient } from "@/lib/supabase/server"
 
@@ -13,7 +13,7 @@ export async function claimLoyaltyStamp(restaurantId: string, phone: string) {
   // Check if customer exists
   const { data: existingCustomer, error: fetchError } = await supabase
     .from('loyalty_customers')
-    .select('id, visits')
+    .select('id, visits, last_visit')
     .eq('restaurant_id', restaurantId)
     .eq('phone', cleanPhone)
     .maybeSingle()
@@ -23,6 +23,15 @@ export async function claimLoyaltyStamp(restaurantId: string, phone: string) {
   }
 
   if (existingCustomer) {
+    // Check cooldown (12 hours) to prevent fraud
+    const lastVisitDate = new Date(existingCustomer.last_visit)
+    const now = new Date()
+    const diffHours = Math.abs(now.getTime() - lastVisitDate.getTime()) / 36e5;
+    
+    if (diffHours < 12) {
+      return { success: false, error: 'You have already claimed a stamp today! Please try again on your next visit.' }
+    }
+
     // Increment visit
     const { data: updated, error: updateError } = await supabase
       .from('loyalty_customers')
