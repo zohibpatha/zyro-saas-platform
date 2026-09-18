@@ -2,8 +2,9 @@
 
 import { useState } from 'react'
 import type { RestaurantWithPhotos } from '@/lib/types'
-import { Star, MapPin, Instagram, Phone, MessageCircle, Globe, ChevronRight, Loader2, CheckCircle2 } from 'lucide-react'
+import { Star, MapPin, Instagram, Phone, MessageCircle, Globe, ChevronRight, Loader2, CheckCircle2, Gift } from 'lucide-react'
 import { submitPrivateFeedback } from '@/actions/feedback'
+import { claimLoyaltyStamp } from '@/actions/loyalty'
 
 export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPhotos }) {
   const [rating, setRating] = useState<number>(0)
@@ -11,6 +12,10 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
   const [feedback, setFeedback] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  
+  const [loyaltyPhone, setLoyaltyPhone] = useState('')
+  const [isClaiming, setIsClaiming] = useState(false)
+  const [loyaltyVisits, setLoyaltyVisits] = useState<number | null>(null)
 
   const photos = [...(restaurant.food_photos || [])].sort((a, b) => a.sort_order - b.sort_order)
 
@@ -39,6 +44,21 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
     return "Glad you had a great experience! Please share it with others."
   }
 
+  const handleClaimLoyalty = async () => {
+    if (!loyaltyPhone || loyaltyPhone.length < 10) {
+      alert("Please enter a valid 10-digit WhatsApp number.")
+      return
+    }
+    setIsClaiming(true)
+    const result = await claimLoyaltyStamp(restaurant.id, loyaltyPhone)
+    setIsClaiming(false)
+    if (result.success) {
+      setLoyaltyVisits(result.visits || 1)
+    } else {
+      alert(result.error)
+    }
+  }
+
   return (
     <div className="flex flex-col gap-4 w-full">
       {/* Business Type Badge */}
@@ -49,6 +69,60 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
           </span>
         </div>
       )}
+
+      {/* Loyalty Stamp Card */}
+      <div className="w-full bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden flex flex-col items-center">
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-indigo-900/30 rounded-full blur-2xl" />
+        
+        <Gift className="w-10 h-10 text-white mb-2" />
+        <h3 className="font-extrabold text-xl mb-1 text-center">Loyalty Rewards</h3>
+        
+        {loyaltyVisits === null ? (
+          <>
+            <p className="text-sm text-indigo-100 mb-6 text-center">Enter your WhatsApp number to collect a visit stamp!</p>
+            <div className="flex w-full max-w-sm gap-2">
+              <input
+                type="tel"
+                placeholder="WhatsApp Number"
+                value={loyaltyPhone}
+                onChange={(e) => setLoyaltyPhone(e.target.value)}
+                className="flex-1 bg-white/20 border border-white/30 rounded-xl px-4 py-3 text-white placeholder:text-indigo-200 outline-none focus:bg-white/30 transition-all font-medium"
+              />
+              <button
+                onClick={handleClaimLoyalty}
+                disabled={isClaiming}
+                className="bg-white text-indigo-600 px-5 rounded-xl font-bold hover:bg-indigo-50 active:scale-95 transition-all flex items-center justify-center min-w-[80px]"
+              >
+                {isClaiming ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Claim'}
+              </button>
+            </div>
+          </>
+        ) : (
+          <div className="flex flex-col items-center w-full animate-in fade-in zoom-in duration-500">
+            <div className="bg-white/20 rounded-2xl p-4 flex gap-2 mb-4">
+              {[...Array(5)].map((_, i) => (
+                <div 
+                  key={i} 
+                  className={`w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-inner ${
+                    i < (loyaltyVisits % 5 === 0 && loyaltyVisits > 0 ? 5 : loyaltyVisits % 5) 
+                      ? 'bg-amber-400 text-amber-900 shadow-amber-500/50' 
+                      : 'bg-white/10 text-white/20'
+                  }`}
+                >
+                  {i < (loyaltyVisits % 5 === 0 && loyaltyVisits > 0 ? 5 : loyaltyVisits % 5) ? '★' : '○'}
+                </div>
+              ))}
+            </div>
+            <p className="text-center font-bold text-lg">
+              {loyaltyVisits % 5 === 0 
+                ? "🎉 You've unlocked a reward!" 
+                : `${5 - (loyaltyVisits % 5)} visits left for a reward!`}
+            </p>
+            <p className="text-xs text-indigo-200 mt-1">Total visits: {loyaltyVisits}</p>
+          </div>
+        )}
+      </div>
 
       {/* Smart Review Funnel */}
       <div className="w-full bg-white/70 backdrop-blur-xl border border-white/60 shadow-xl rounded-[2rem] p-6 flex flex-col items-center relative overflow-hidden">

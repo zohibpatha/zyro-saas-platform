@@ -41,7 +41,18 @@ export interface PrivateFeedback {
   created_at: string;
 }
 
+export interface LoyaltyCustomer {
+  id: string;
+  restaurant_id: string;
+  phone: string;
+  name: string | null;
+  visits: number;
+  last_visit: string;
+  created_at: string;
+}
+
 export interface RestaurantWithPhotos extends Restaurant {
   food_photos: FoodPhoto[];
   private_feedback?: PrivateFeedback[];
+  loyalty_customers?: LoyaltyCustomer[];
 }
