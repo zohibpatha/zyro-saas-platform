@@ -5,7 +5,7 @@ import RestaurantForm from '@/components/restaurant-form'
 import QRCodeGenerator from '@/components/qr-code-generator'
 import FoodPhotosManager from '@/components/food-photos-manager'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { ExternalLink, Link as LinkIcon, Camera, MapPin, QrCode, Sparkles, MessageSquareWarning, Users } from 'lucide-react'
+import { ExternalLink, Link as LinkIcon, Camera, MapPin, QrCode, Sparkles, MessageSquareWarning, Users, MessageCircle } from 'lucide-react'
 import Link from 'next/link'
 
 export default async function ClientManagePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -186,26 +186,52 @@ export default async function ClientManagePage({ params }: { params: Promise<{ s
                       <th className="py-3 px-4 font-semibold text-slate-600 dark:text-slate-300">WhatsApp Number</th>
                       <th className="py-3 px-4 font-semibold text-slate-600 dark:text-slate-300">Total Visits</th>
                       <th className="py-3 px-4 font-semibold text-slate-600 dark:text-slate-300">Last Visit</th>
+                      <th className="py-3 px-4 font-semibold text-slate-600 dark:text-slate-300 text-right">Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     {[...restaurant.loyalty_customers]
                       .sort((a, b) => b.visits - a.visits)
-                      .map((customer) => (
-                      <tr key={customer.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                        <td className="py-3 px-4 font-medium text-slate-900 dark:text-white">
-                          +{customer.phone}
-                        </td>
-                        <td className="py-3 px-4">
-                          <span className="inline-flex items-center justify-center bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 px-2.5 py-0.5 rounded-full text-sm font-medium">
-                            {customer.visits} stamps
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-sm text-slate-500">
-                          {new Date(customer.last_visit).toLocaleDateString()}
-                        </td>
-                      </tr>
-                    ))}
+                      .map((customer) => {
+                        const daysSinceVisit = Math.floor((new Date().getTime() - new Date(customer.last_visit).getTime()) / (1000 * 3600 * 24));
+                        const isDormant = daysSinceVisit > 7;
+                        const targetStamps = restaurant.reward_stamps || 5;
+                        const stampsLeft = targetStamps - (customer.visits % targetStamps);
+                        
+                        const reminderText = encodeURIComponent(`Hey! We miss you at ${restaurant.name}. You have ${customer.visits} visits so far. Just ${stampsLeft} more to go to unlock your reward! Come visit us soon. 🚀`);
+                        const waLink = `https://wa.me/${customer.phone}?text=${reminderText}`;
+
+                        return (
+                          <tr key={customer.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                            <td className="py-3 px-4 font-medium text-slate-900 dark:text-white">
+                              +{customer.phone}
+                              {isDormant && (
+                                <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400">
+                                  Missing ({daysSinceVisit}d)
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-3 px-4">
+                              <span className="inline-flex items-center justify-center bg-indigo-100 text-indigo-700 dark:bg-indigo-500/20 dark:text-indigo-300 px-2.5 py-0.5 rounded-full text-sm font-medium">
+                                {customer.visits} stamps
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 text-sm text-slate-500">
+                              {new Date(customer.last_visit).toLocaleDateString()}
+                            </td>
+                            <td className="py-3 px-4 text-right">
+                              <a 
+                                href={waLink} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white rounded-lg text-xs font-bold transition-colors"
+                              >
+                                <MessageCircle className="w-3.5 h-3.5" /> Remind
+                              </a>
+                            </td>
+                          </tr>
+                        )
+                      })}
                   </tbody>
                 </table>
               </div>
