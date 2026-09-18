@@ -54,14 +54,14 @@ export default async function DashboardPage() {
               <CardDescription className="text-slate-500">Share this link with your customers to show your menu.</CardDescription>
             </CardHeader>
             <CardContent className="relative z-10">
-              <div className="flex items-center gap-4 bg-white/80 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-sm">
-                <code className="flex-1 text-base text-slate-700 dark:text-slate-300 truncate font-mono">
+              <div className="flex flex-col sm:flex-row items-center gap-4 bg-white/80 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl shadow-sm">
+                <code className="flex-1 min-w-0 w-full text-base text-slate-700 dark:text-slate-300 truncate font-mono text-center sm:text-left">
                   {siteUrl}/r/{restaurant.slug}
                 </code>
                 <Link
                   href={`/r/${restaurant.slug}`}
                   target="_blank"
-                  className="shrink-0 inline-flex items-center justify-center gap-2 text-sm font-semibold text-white bg-slate-900 dark:bg-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 rounded-xl px-6 py-3 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
+                  className="shrink-0 w-full sm:w-auto inline-flex items-center justify-center gap-2 text-sm font-semibold text-white bg-slate-900 dark:bg-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200 rounded-xl px-6 py-3 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
                 >
                   Visit <ExternalLink className="h-4 w-4" />
                 </Link>
