@@ -12,7 +12,7 @@ import { updateRestaurantBySlug } from '@/actions/manage'
 import ImageUpload from '@/components/image-upload'
 import type { Restaurant } from '@/lib/types'
 import { useRouter } from 'next/navigation'
-import { Sparkles, Globe, MapPin, Phone, Instagram, Palette } from 'lucide-react'
+import { Sparkles, Globe, MapPin, Phone, Instagram, Palette, Star } from 'lucide-react'
 
 const restaurantSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -27,6 +27,7 @@ const restaurantSchema = z.object({
   whatsapp: z.string().optional().or(z.literal('')),
   address: z.string().optional().or(z.literal('')),
   primary_color: z.string().optional(),
+  loyalty_offer: z.string().optional().or(z.literal('')),
 })
 
 type FormValues = z.infer<typeof restaurantSchema>
@@ -51,6 +52,7 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
       whatsapp: restaurant?.whatsapp || '',
       address: restaurant?.address || '',
       primary_color: restaurant?.primary_color || '#111111',
+      loyalty_offer: restaurant?.loyalty_offer || '',
     }
   })
 
@@ -201,6 +203,20 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
               </div>
               <Input type="text" {...register('primary_color')} className={`${inputClasses} font-mono text-sm uppercase flex-1`} />
             </div>
+          </div>
+        </div>
+
+        {/* Marketing & Rewards */}
+        <div className="space-y-6 md:col-span-2 lg:col-span-3 pt-6 border-t border-slate-100 dark:border-slate-800">
+          <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2">
+            <Star className="w-4 h-4 text-amber-500" /> Marketing & Rewards
+          </h3>
+          <div className="space-y-2 max-w-2xl">
+            <Label htmlFor="loyalty_offer" className="text-sm font-medium text-slate-600 dark:text-slate-400">
+              Custom Loyalty / VIP Offer
+            </Label>
+            <p className="text-xs text-slate-500 mb-2">Leave blank to use the default message. Write your own attractive offer to capture customer phone numbers (e.g., "Join to get 15% off your next visit!").</p>
+            <Input id="loyalty_offer" {...register('loyalty_offer')} className={inputClasses} placeholder="e.g. Get a free coffee on your 5th visit!" />
           </div>
         </div>
 

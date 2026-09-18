@@ -12,6 +12,7 @@ export interface Restaurant {
   phone: string | null;
   whatsapp: string | null;
   address: string | null;
+  loyalty_offer?: string;
   primary_color: string;
   is_active: boolean;
   owner_email: string;

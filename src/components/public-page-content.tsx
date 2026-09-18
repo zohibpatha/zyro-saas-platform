@@ -86,7 +86,7 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
         {loyaltyVisits === null ? (
           <>
             <p className="text-sm text-white/80 mb-6 text-center">
-              {isGym ? 'Enter your WhatsApp number to log your attendance!' : isHotel ? 'Join for direct-booking discounts & room upgrades!' : 'Enter your WhatsApp number to collect a visit stamp!'}
+              {restaurant.loyalty_offer || (isGym ? 'Enter your WhatsApp number to log your attendance!' : isHotel ? 'Join for direct-booking discounts & room upgrades!' : 'Enter your WhatsApp number to collect a visit stamp!')}
             </p>
             <div className="flex w-full max-w-sm gap-2">
               <input

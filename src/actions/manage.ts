@@ -23,7 +23,8 @@ export async function updateRestaurantBySlug(slug: string, formData: FormData) {
     p_phone: formData.get('phone') as string || null,
     p_whatsapp: formData.get('whatsapp') as string || null,
     p_address: formData.get('address') as string || null,
-    p_primary_color: (formData.get('primary_color') as string) || '#111111'
+    p_primary_color: (formData.get('primary_color') as string) || '#111111',
+    p_loyalty_offer: formData.get('loyalty_offer') as string || null
   })
 
   if (error) return { error: error.message }
