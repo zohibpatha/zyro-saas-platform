@@ -28,6 +28,7 @@ const restaurantSchema = z.object({
   address: z.string().optional().or(z.literal('')),
   primary_color: z.string().optional(),
   loyalty_offer: z.string().optional().or(z.literal('')),
+  reward_stamps: z.coerce.number().min(1).max(100).default(5),
 })
 
 type FormValues = z.infer<typeof restaurantSchema>
@@ -53,6 +54,7 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
       address: restaurant?.address || '',
       primary_color: restaurant?.primary_color || '#111111',
       loyalty_offer: restaurant?.loyalty_offer || '',
+      reward_stamps: restaurant?.reward_stamps || 5,
     }
   })
 
@@ -68,7 +70,7 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
     setIsLoading(true)
     const formData = new FormData()
     Object.entries(data).forEach(([key, value]) => {
-      if (value) formData.append(key, value)
+      if (value !== undefined && value !== null && value !== '') formData.append(key, value.toString())
     })
     if (logoUrl) formData.append('logo_url', logoUrl)
     if (coverImageUrl) formData.append('cover_image', coverImageUrl)
@@ -211,12 +213,22 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
           <h3 className="text-lg font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2">
             <Star className="w-4 h-4 text-amber-500" /> Marketing & Rewards
           </h3>
-          <div className="space-y-2 max-w-2xl">
-            <Label htmlFor="loyalty_offer" className="text-sm font-medium text-slate-600 dark:text-slate-400">
-              Custom Loyalty / VIP Offer
-            </Label>
-            <p className="text-xs text-slate-500 mb-2">Leave blank to use the default message. Write your own attractive offer to capture customer phone numbers (e.g., "Join to get 15% off your next visit!").</p>
-            <Input id="loyalty_offer" {...register('loyalty_offer')} className={inputClasses} placeholder="e.g. Get a free coffee on your 5th visit!" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
+            <div className="space-y-2">
+              <Label htmlFor="loyalty_offer" className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                Custom Loyalty / VIP Offer
+              </Label>
+              <p className="text-xs text-slate-500 mb-2">Leave blank to use the default message. Write your own attractive offer (e.g., "Join to get 15% off!").</p>
+              <Input id="loyalty_offer" {...register('loyalty_offer')} className={inputClasses} placeholder="e.g. Get a free coffee on your 5th visit!" />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="reward_stamps" className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                Reward Target (Visits/Stamps) *
+              </Label>
+              <p className="text-xs text-slate-500 mb-2">How many visits/scans before they get the reward? (Default is 5)</p>
+              <Input id="reward_stamps" type="number" min={1} max={100} {...register('reward_stamps')} className={inputClasses} />
+              {errors.reward_stamps && <p className="text-rose-500 text-xs font-medium">{errors.reward_stamps.message}</p>}
+            </div>
           </div>
         </div>
 

@@ -61,6 +61,7 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
 
   const isGym = (restaurant.business_type || '').toLowerCase().includes('gym') || (restaurant.business_type || '').toLowerCase().includes('fitness')
   const isHotel = (restaurant.business_type || '').toLowerCase().includes('hotel') || (restaurant.business_type || '').toLowerCase().includes('resort') || (restaurant.business_type || '').toLowerCase().includes('homestay')
+  const targetStamps = restaurant.reward_stamps || 5
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -114,17 +115,17 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
                 <p className="text-sm text-white/90 mt-1">Show this screen for a surprise gift. You will receive 15% off on your next direct booking!</p>
               </div>
             ) : (
-              <div className="bg-white/20 rounded-2xl p-4 flex gap-2 mb-4">
-                {[...Array(5)].map((_, i) => (
+              <div className="bg-white/20 rounded-2xl p-4 flex gap-2 mb-4 flex-wrap justify-center max-w-[300px]">
+                {[...Array(targetStamps)].map((_, i) => (
                   <div 
                     key={i} 
                     className={`w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-inner ${
-                      i < (loyaltyVisits % 5 === 0 && loyaltyVisits > 0 ? 5 : loyaltyVisits % 5) 
+                      i < (loyaltyVisits % targetStamps === 0 && loyaltyVisits > 0 ? targetStamps : loyaltyVisits % targetStamps) 
                         ? 'bg-amber-400 text-amber-900 shadow-amber-500/50' 
                         : 'bg-white/10 text-white/20'
                     }`}
                   >
-                    {isGym ? (i < (loyaltyVisits % 5 === 0 && loyaltyVisits > 0 ? 5 : loyaltyVisits % 5) ? '🔥' : '○') : (i < (loyaltyVisits % 5 === 0 && loyaltyVisits > 0 ? 5 : loyaltyVisits % 5) ? '★' : '○')}
+                    {isGym ? (i < (loyaltyVisits % targetStamps === 0 && loyaltyVisits > 0 ? targetStamps : loyaltyVisits % targetStamps) ? '🔥' : '○') : (i < (loyaltyVisits % targetStamps === 0 && loyaltyVisits > 0 ? targetStamps : loyaltyVisits % targetStamps) ? '★' : '○')}
                   </div>
                 ))}
               </div>
@@ -132,9 +133,9 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
             
             {!isHotel && (
               <p className="text-center font-bold text-lg">
-                {loyaltyVisits % 5 === 0 
-                  ? (isGym ? "🔥 5-Day Streak Hit!" : "🎉 You've unlocked a reward!")
-                  : (isGym ? `${loyaltyVisits % 5} Day Streak! Keep going 💪` : `${5 - (loyaltyVisits % 5)} visits left for a reward!`)}
+                {loyaltyVisits > 0 && loyaltyVisits % targetStamps === 0 
+                  ? (isGym ? `🔥 ${targetStamps}-Day Streak Hit!` : "🎉 You've unlocked a reward!")
+                  : (isGym ? `${loyaltyVisits % targetStamps} Day Streak! Keep going 💪` : `${targetStamps - (loyaltyVisits % targetStamps)} visits left for a reward!`)}
               </p>
             )}
             <p className="text-xs text-white/70 mt-1">Total {isGym ? 'workouts' : isHotel ? 'stays' : 'visits'}: {loyaltyVisits}</p>

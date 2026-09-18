@@ -66,6 +66,7 @@ export async function createRestaurant(formData: FormData) {
     address: formData.get('address') as string || null,
     primary_color: (formData.get('primary_color') as string) || '#111111',
     loyalty_offer: formData.get('loyalty_offer') as string || null,
+    reward_stamps: parseInt(formData.get('reward_stamps') as string || '5', 10),
     owner_email: (formData.get('owner_email') as string) || user.email,
   })
 
@@ -95,6 +96,7 @@ export async function updateRestaurant(id: string, formData: FormData) {
     address: formData.get('address') as string || null,
     primary_color: (formData.get('primary_color') as string) || '#111111',
     loyalty_offer: formData.get('loyalty_offer') as string || null,
+    reward_stamps: parseInt(formData.get('reward_stamps') as string || '5', 10),
   }
 
   // Admin can change owner_email
