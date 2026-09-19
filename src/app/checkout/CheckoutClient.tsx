@@ -4,7 +4,6 @@ import { useState, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Upload, Loader2, IndianRupee, ShieldCheck } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
-import { QRCodeSVG as QRCode } from 'qrcode.react'
 
 export default function CheckoutClient() {
   const router = useRouter()
