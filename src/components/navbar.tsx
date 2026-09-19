@@ -71,8 +71,8 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
                 </button>
               </div>
             ) : (
-              <Link href="/login">
-                <Button size="sm" className="h-9 px-5 bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 rounded-full font-medium transition-all shadow-md shadow-black/10">Sign In</Button>
+              <Link href="/pricing">
+                <Button size="sm" className="h-9 px-5 bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 rounded-full font-medium transition-all shadow-md shadow-black/10">Get Started</Button>
               </Link>
             )}
           </div>
@@ -112,8 +112,8 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
               </>
             )}
             {!user && (
-              <Link href="/login" className="block px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                Sign In
+              <Link href="/pricing" className="block px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                Get Started
               </Link>
             )}
             {user && (

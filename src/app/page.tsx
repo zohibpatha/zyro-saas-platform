@@ -17,7 +17,7 @@ export default function LandingPage() {
               Boost reviews, share menus, and connect with customers effortlessly. All through a single, beautiful digital business card for your restaurant.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <Link href="/login">
+              <Link href="/pricing">
                 <Button size="lg" className="h-12 px-8 text-lg rounded-full">
                   Get Started
                   <ArrowRight className="ml-2 h-5 w-5" />
