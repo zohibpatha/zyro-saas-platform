@@ -29,6 +29,7 @@ const restaurantSchema = z.object({
   primary_color: z.string().optional(),
   loyalty_offer: z.string().optional().or(z.literal('')),
   reward_stamps: z.coerce.number().min(1).max(100).default(5),
+  plan_tier: z.string().default('Pro'),
 })
 
 type FormValues = z.infer<typeof restaurantSchema>
@@ -44,6 +45,7 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
     defaultValues: {
       name: restaurant?.name || '',
       slug: restaurant?.slug || '',
+      business_type: restaurant?.business_type || 'Restaurant',
       owner_email: restaurant?.owner_email || '',
       google_review_url: restaurant?.google_review_url || '',
       google_maps_url: restaurant?.google_maps_url || '',
@@ -55,6 +57,7 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
       primary_color: restaurant?.primary_color || '#111111',
       loyalty_offer: restaurant?.loyalty_offer || '',
       reward_stamps: restaurant?.reward_stamps || 5,
+      plan_tier: restaurant?.plan_tier || 'Pro',
     }
   })
 
@@ -136,6 +139,16 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
                 <option value="Other">Other</option>
               </select>
             </div>
+
+            {isAdmin && (
+              <div className="space-y-2">
+                <Label htmlFor="plan_tier" className="text-sm font-medium text-indigo-600 dark:text-indigo-400">Plan Tier (Admin Only) *</Label>
+                <select id="plan_tier" {...register('plan_tier')} className={`w-full border-indigo-200 focus:border-indigo-500 focus:ring-indigo-500 ${inputClasses}`}>
+                  <option value="Pro">Pro (₹399 - Stamps & Reviews)</option>
+                  <option value="Basic">Basic (₹199 - Reviews Only)</option>
+                </select>
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="slug" className="text-sm font-medium text-slate-600 dark:text-slate-400">Profile Slug (URL) *</Label>

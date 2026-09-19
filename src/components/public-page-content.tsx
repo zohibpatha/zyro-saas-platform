@@ -76,73 +76,76 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
       )}
 
       {/* Loyalty Stamp Card */}
-      <div className={`w-full ${isGym ? 'bg-gradient-to-br from-orange-500 to-red-600' : (isHotel || isHotelAndRestaurant) ? 'bg-gradient-to-br from-emerald-600 to-teal-800' : 'bg-gradient-to-br from-indigo-500 to-purple-600'} rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden flex flex-col items-center`}>
-        <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
-        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-black/10 rounded-full blur-2xl" />
-        
-        {isGym ? <Activity className="w-10 h-10 text-white mb-2" /> : (isHotel || isHotelAndRestaurant) ? <Crown className="w-10 h-10 text-amber-300 mb-2" /> : <Gift className="w-10 h-10 text-white mb-2" />}
-        <h3 className="font-extrabold text-xl mb-1 text-center">
-          {isGym ? 'Workout Tracker' : isHotel ? 'VIP Guest Club' : isHotelAndRestaurant ? 'Guest & Diner VIP' : 'Loyalty Rewards'}
-        </h3>
-        
-        {loyaltyVisits === null ? (
-          <>
-            <p className="text-sm text-white/80 mb-6 text-center">
-              {restaurant.loyalty_offer || (isGym ? 'Enter your WhatsApp number to log your attendance!' : isHotel ? 'Join for direct-booking discounts & room upgrades!' : 'Enter your WhatsApp number to collect a visit stamp!')}
-            </p>
-            <div className="flex w-full max-w-sm gap-2">
-              <input
-                type="tel"
-                placeholder="WhatsApp Number"
-                value={loyaltyPhone}
-                onChange={(e) => setLoyaltyPhone(e.target.value)}
-                className="flex-1 bg-white/20 border border-white/30 rounded-xl px-4 py-3 text-white placeholder:text-white/60 outline-none focus:bg-white/30 transition-all font-medium"
-              />
-              <button
-                onClick={handleClaimLoyalty}
-                disabled={isClaiming}
-                className={`bg-white ${isGym ? 'text-red-600' : (isHotel || isHotelAndRestaurant) ? 'text-emerald-700' : 'text-indigo-600'} px-5 rounded-xl font-bold hover:bg-white/90 active:scale-95 transition-all flex items-center justify-center min-w-[80px]`}
-              >
-                {isClaiming ? <Loader2 className="w-5 h-5 animate-spin" /> : (isGym ? 'Log In' : isHotel ? 'Join' : isHotelAndRestaurant ? 'Join & Claim' : 'Claim')}
-              </button>
-            </div>
-          </>
-        ) : (
-          <div className="flex flex-col items-center w-full animate-in fade-in zoom-in duration-500">
-            {isHotel ? (
-              <div className="bg-white/10 border border-white/20 rounded-2xl p-6 flex flex-col items-center mb-4 w-full text-center">
-                <Crown className="w-12 h-12 text-amber-400 mb-3" />
-                <p className="font-bold text-lg text-amber-300">Welcome, VIP!</p>
-                <p className="text-sm text-white/90 mt-1">Show this screen for a surprise gift. You will receive 15% off on your next direct booking!</p>
-              </div>
-            ) : (
-              <div className="bg-white/20 rounded-2xl p-4 flex gap-2 mb-4 flex-wrap justify-center max-w-[300px]">
-                {[...Array(targetStamps)].map((_, i) => (
-                  <div 
-                    key={i} 
-                    className={`w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-inner ${
-                      i < (loyaltyVisits % targetStamps === 0 && loyaltyVisits > 0 ? targetStamps : loyaltyVisits % targetStamps) 
-                        ? 'bg-amber-400 text-amber-900 shadow-amber-500/50' 
-                        : 'bg-white/10 text-white/20'
-                    }`}
-                  >
-                    {isGym ? (i < (loyaltyVisits % targetStamps === 0 && loyaltyVisits > 0 ? targetStamps : loyaltyVisits % targetStamps) ? '🔥' : '○') : (i < (loyaltyVisits % targetStamps === 0 && loyaltyVisits > 0 ? targetStamps : loyaltyVisits % targetStamps) ? '★' : '○')}
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {!isHotel && (
-              <p className="text-center font-bold text-lg">
-                {loyaltyVisits > 0 && loyaltyVisits % targetStamps === 0 
-                  ? (isGym ? `🔥 ${targetStamps}-Day Streak Hit!` : "🎉 You've unlocked a reward!")
-                  : (isGym ? `${loyaltyVisits % targetStamps} Day Streak! Keep going 💪` : `${targetStamps - (loyaltyVisits % targetStamps)} visits left for a reward!`)}
+      {restaurant.plan_tier !== 'Basic' && (
+        <div className={`w-full ${isGym ? 'bg-gradient-to-br from-orange-500 to-red-600' : (isHotel || isHotelAndRestaurant) ? 'bg-gradient-to-br from-emerald-600 to-teal-800' : 'bg-gradient-to-br from-indigo-500 to-purple-600'} rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden flex flex-col items-center`}>
+          <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
+          <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-black/10 rounded-full blur-2xl" />
+          
+          {isGym ? <Activity className="w-10 h-10 text-white mb-2" /> : (isHotel || isHotelAndRestaurant) ? <Crown className="w-10 h-10 text-amber-300 mb-2" /> : <Gift className="w-10 h-10 text-white mb-2" />}
+          <h3 className="font-extrabold text-xl mb-1 text-center">
+            {isGym ? 'Workout Tracker' : isHotel ? 'VIP Guest Club' : isHotelAndRestaurant ? 'Guest & Diner VIP' : 'Loyalty Rewards'}
+          </h3>
+          
+          {loyaltyVisits === null ? (
+            <>
+              <p className="text-sm text-white/80 mb-6 text-center">
+                {restaurant.loyalty_offer || (isGym ? 'Enter your WhatsApp number to log your attendance!' : isHotel ? 'Join for direct-booking discounts & room upgrades!' : 'Enter your WhatsApp number to collect a visit stamp!')}
               </p>
-            )}
-            <p className="text-xs text-white/70 mt-1">Total {isGym ? 'workouts' : isHotel ? 'stays' : 'visits'}: {loyaltyVisits}</p>
-          </div>
-        )}
-      </div>
+              <div className="flex w-full max-w-sm gap-2">
+                <input
+                  type="tel"
+                  placeholder="WhatsApp Number"
+                  value={loyaltyPhone}
+                  onChange={(e) => setLoyaltyPhone(e.target.value)}
+                  className="flex-1 bg-white/20 border border-white/30 rounded-xl px-4 py-3 text-white placeholder:text-white/60 outline-none focus:bg-white/30 transition-all font-medium"
+                />
+                <button
+                  onClick={handleClaimLoyalty}
+                  disabled={isClaiming}
+                  className={`bg-white ${isGym ? 'text-red-600' : (isHotel || isHotelAndRestaurant) ? 'text-emerald-700' : 'text-indigo-600'} px-5 rounded-xl font-bold hover:bg-white/90 active:scale-95 transition-all flex items-center justify-center min-w-[80px]`}
+                >
+                  {isClaiming ? <Loader2 className="w-5 h-5 animate-spin" /> : (isGym ? 'Log In' : isHotel ? 'Join' : isHotelAndRestaurant ? 'Join & Claim' : 'Claim')}
+                </button>
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-col items-center w-full animate-in fade-in zoom-in duration-500">
+              {isHotel ? (
+                <div className="bg-white/10 border border-white/20 rounded-2xl p-6 flex flex-col items-center mb-4 w-full text-center">
+                  <Crown className="w-12 h-12 text-amber-400 mb-3" />
+                  <p className="font-bold text-lg text-amber-300">Welcome, VIP!</p>
+                  <p className="text-sm text-white/90 mt-1">Show this screen for a surprise gift. You will receive 15% off on your next direct booking!</p>
+                </div>
+              ) : (
+                <div className="bg-white/20 rounded-2xl p-4 flex gap-2 mb-4 flex-wrap justify-center max-w-[300px]">
+                  {[...Array(targetStamps)].map((_, i) => (
+                    <div 
+                      key={i} 
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-xl shadow-inner ${
+                        i < (loyaltyVisits % targetStamps === 0 && loyaltyVisits > 0 ? targetStamps : loyaltyVisits % targetStamps) 
+                          ? 'bg-amber-400 text-amber-900 shadow-amber-500/50' 
+                          : 'bg-white/10 text-white/20'
+                      }`}
+                    >
+                      {isGym ? (i < (loyaltyVisits % targetStamps === 0 && loyaltyVisits > 0 ? targetStamps : loyaltyVisits % targetStamps) ? '🔥' : '○') : (i < (loyaltyVisits % targetStamps === 0 && loyaltyVisits > 0 ? targetStamps : loyaltyVisits % targetStamps) ? '★' : '○')}
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {!isHotel && (
+                <p className="text-center font-bold text-lg">
+                  {loyaltyVisits > 0 && loyaltyVisits % targetStamps === 0 
+                    ? (isGym ? `🔥 ${targetStamps}-Day Streak Hit!` : "🎉 You've unlocked a reward!")
+                    : (isGym ? `${loyaltyVisits % targetStamps} Day Streak! Keep going 💪` : `${targetStamps - (loyaltyVisits % targetStamps)} visits left for a reward!`)}
+                </p>
+              )}
+              <p className="text-xs text-white/70 mt-1">Total {isGym ? 'workouts' : isHotel ? 'stays' : 'visits'}: {loyaltyVisits}</p>
+            </div>
+          )}
+        </div>
+      )}
+
 
       {/* Smart Review Funnel */}
       <div className="w-full bg-white/70 backdrop-blur-xl border border-white/60 shadow-xl rounded-[2rem] p-6 flex flex-col items-center relative overflow-hidden">

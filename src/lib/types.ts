@@ -14,6 +14,7 @@ export interface Restaurant {
   address: string | null;
   loyalty_offer?: string;
   reward_stamps?: number;
+  plan_tier?: string;
   primary_color: string;
   is_active: boolean;
   owner_email: string;
