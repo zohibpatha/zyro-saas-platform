@@ -125,11 +125,10 @@ export default function CheckoutClient() {
           
           <div className="hidden md:block">
             <div className="bg-white p-4 rounded-xl inline-block shadow-sm border border-slate-200">
-               <QRCode 
-                 value={upiLink} 
-                 size={200}
-                 level="M"
-                 includeMargin={true}
+               <img 
+                 src="/payment-qr.png" 
+                 alt="UPI QR Code" 
+                 className="w-48 h-48 mx-auto rounded-lg object-contain"
                />
             </div>
             <p className="mt-4 text-sm font-medium text-slate-600 dark:text-slate-400">Scan this QR with PhonePe, GPay, or Paytm</p>
