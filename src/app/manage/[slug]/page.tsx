@@ -34,9 +34,12 @@ export default async function ClientManagePage({ params }: { params: Promise<{ s
           </div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Subscription Expired</h1>
           <p className="text-slate-600 dark:text-slate-400 mb-6">Your access to the Zyro platform has expired. Please renew your subscription to restore your public page and dashboard. All your data is safely backed up.</p>
-          <a href={`/checkout?plan=${restaurant.plan_tier === 'Basic' ? '199' : '399'}&restaurant_id=${restaurant.id}`} className="block w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition-colors">
+          <Link
+            href={`/checkout?plan=${restaurant.plan_tier === 'Basic' ? '199' : '399'}&restaurant_id=${restaurant.id}`}
+            className="block w-full text-center bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition-colors"
+          >
             Renew Subscription
-          </a>
+          </Link>
         </div>
       </div>
     )

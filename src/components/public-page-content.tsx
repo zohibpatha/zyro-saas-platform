@@ -28,10 +28,15 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
   const handleFeedbackSubmit = async () => {
     if (!feedback.trim() || isSubmitting) return
     setIsSubmitting(true)
-    const res = await submitPrivateFeedback(restaurant.id, rating, feedback)
-    setIsSubmitting(false)
-    if (res.success) {
-      setIsSubmitted(true)
+    try {
+      const res = await submitPrivateFeedback(restaurant.id, rating, feedback)
+      if (res.success) {
+        setIsSubmitted(true)
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -50,12 +55,18 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
       return
     }
     setIsClaiming(true)
-    const result = await claimLoyaltyStamp(restaurant.id, loyaltyPhone)
-    setIsClaiming(false)
-    if (result.success) {
-      setLoyaltyVisits(result.visits || 1)
-    } else {
-      alert(result.error)
+    try {
+      const result = await claimLoyaltyStamp(restaurant.id, loyaltyPhone)
+      if (result.success) {
+        setLoyaltyVisits(result.visits || 1)
+      } else {
+        alert(result.error)
+      }
+    } catch (e) {
+      console.error(e)
+      alert("Something went wrong. Please try again.")
+    } finally {
+      setIsClaiming(false)
     }
   }
 
@@ -243,12 +254,15 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
             </div>
 
             <button
-              onClick={async () => {
-                if (feedback.trim()) {
-                  await navigator.clipboard.writeText(feedback)
-                }
-                window.open(formatUrl(restaurant.google_review_url), '_blank')
-              }}
+                onClick={async () => {
+                  try {
+                    if (feedback.trim()) await navigator.clipboard.writeText(feedback)
+                  } catch (err) {
+                    console.error('Clipboard write failed:', err)
+                  } finally {
+                    window.open(formatUrl(restaurant.google_review_url), '_blank')
+                  }
+                }}
               className="group relative w-full rounded-2xl p-[2px] overflow-hidden hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 animate-pulse blur-md opacity-80 group-hover:opacity-100 transition-opacity duration-500" />

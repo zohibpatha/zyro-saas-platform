@@ -62,7 +62,7 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
             {user ? (
               <div className="flex items-center gap-4 bg-white/50 dark:bg-gray-800/50 border border-gray-200/50 dark:border-gray-700/50 px-4 py-1.5 rounded-full shadow-sm backdrop-blur-sm">
                 <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center text-[10px] text-white font-bold">
-                  {user.email?.[0].toUpperCase()}
+                  {user.email?.charAt(0).toUpperCase()}
                 </div>
                 <span className="text-sm font-medium text-gray-600 dark:text-gray-300">{user.email}</span>
                 <div className="w-px h-4 bg-gray-200 dark:bg-gray-700 mx-1"></div>
@@ -71,9 +71,14 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
                 </button>
               </div>
             ) : (
-              <Link href="/pricing">
-                <Button size="sm" className="h-9 px-5 bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 rounded-full font-medium transition-all shadow-md shadow-black/10">Get Started</Button>
-              </Link>
+              <div className="flex items-center gap-2">
+                <Link href="/login" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white px-3 py-2 transition-colors">
+                  Login
+                </Link>
+                <Link href="/pricing">
+                  <Button size="sm" className="h-9 px-5 bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 rounded-full font-medium transition-all shadow-md shadow-black/10">Get Started</Button>
+                </Link>
+              </div>
             )}
           </div>
 
@@ -112,9 +117,14 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
               </>
             )}
             {!user && (
-              <Link href="/pricing" className="block px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                Get Started
-              </Link>
+              <>
+                <Link href="/login" className="block px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                  Login
+                </Link>
+                <Link href="/pricing" className="block px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                  Get Started
+                </Link>
+              </>
             )}
             {user && (
               <button

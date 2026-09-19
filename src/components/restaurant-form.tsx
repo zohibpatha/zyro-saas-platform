@@ -123,7 +123,16 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
               <Label htmlFor="name" className="text-sm font-medium text-slate-600 dark:text-slate-400">Business Name *</Label>
-              <Input id="name" {...register('name')} onBlur={generateSlug} className={inputClasses} placeholder="e.g. The Rustic Kitchen" />
+              <Input 
+                id="name" 
+                {...register('name')} 
+                onBlur={(e) => {
+                  register('name').onBlur(e)
+                  generateSlug()
+                }} 
+                className={inputClasses} 
+                placeholder="e.g. The Rustic Kitchen" 
+              />
               {errors.name && <p className="text-rose-500 text-xs font-medium">{errors.name.message}</p>}
             </div>
 

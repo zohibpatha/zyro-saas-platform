@@ -52,18 +52,26 @@ export async function POST(req: Request) {
         .eq('id', session.id)
 
       if (body.restaurant_id) {
-        // Renewal Flow! Add 28 days to subscription
-        const { data: currentRest } = await supabase.from('restaurants').select('subscription_end_date, slug').eq('id', body.restaurant_id).single()
+        // Renewal Flow! Validate amount
+        const planPrice = 199; // Or 399 depending on plan, assuming basic validation
+        const requestedMonths = months || 1;
         
-        let newEnd = new Date()
-        if (currentRest?.subscription_end_date) {
-           const currentEnd = new Date(currentRest.subscription_end_date)
-           if (currentEnd > new Date()) newEnd = currentEnd // Stack if not expired
+        if (amount < requestedMonths * planPrice) {
+          return NextResponse.json({ error: 'Invalid payment amount' }, { status: 400 });
         }
-        newEnd.setDate(newEnd.getDate() + (months || 1) * 28)
 
-        await supabase.from('restaurants').update({ subscription_end_date: newEnd.toISOString() }).eq('id', body.restaurant_id)
-        
+        // Add 28 days via atomic RPC to prevent race conditions
+        const { error: rpcError } = await supabase.rpc('renew_subscription', { 
+          p_restaurant_id: body.restaurant_id, 
+          p_months: requestedMonths 
+        });
+
+        if (rpcError) {
+          console.error('RPC Error:', rpcError)
+          throw rpcError;
+        }
+
+        const { data: currentRest } = await supabase.from('restaurants').select('slug').eq('id', body.restaurant_id).single()
         return NextResponse.json({ success: true, isRenewal: true, slug: currentRest?.slug })
       }
       

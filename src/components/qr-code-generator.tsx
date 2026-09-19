@@ -30,9 +30,12 @@ export default function QRCodeGenerator({ slug, restaurantName }: { slug: string
   }
 
   const copyUrl = async () => {
-    await navigator.clipboard.writeText(url)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    try {
+      await navigator.clipboard.writeText(url)
+      setCopied(true)
+    } catch (err) {
+      console.error('Failed to copy', err)
+    }
   }
 
   return (
