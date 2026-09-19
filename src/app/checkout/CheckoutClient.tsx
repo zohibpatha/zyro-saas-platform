@@ -4,6 +4,7 @@ import { useState, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Upload, Loader2, IndianRupee, ShieldCheck } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { QRCodeSVG as QRCode } from 'qrcode.react'
 
 export default function CheckoutClient() {
   const router = useRouter()
@@ -124,7 +125,12 @@ export default function CheckoutClient() {
           
           <div className="hidden md:block">
             <div className="bg-white p-4 rounded-xl inline-block shadow-sm border border-slate-200">
-               <img src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`} alt="UPI QR Code" className="w-48 h-48 mx-auto" />
+               <QRCode 
+                 value={upiLink} 
+                 size={200}
+                 level="M"
+                 includeMargin={true}
+               />
             </div>
             <p className="mt-4 text-sm font-medium text-slate-600 dark:text-slate-400">Scan this QR with PhonePe, GPay, or Paytm</p>
           </div>
