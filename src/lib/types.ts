@@ -15,9 +15,22 @@ export interface Restaurant {
   loyalty_offer?: string;
   reward_stamps?: number;
   plan_tier?: string;
+  subscription_end_date?: string | null;
   primary_color: string;
   is_active: boolean;
   owner_email: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CheckoutSession {
+  id: string;
+  phone_number: string;
+  amount: number;
+  months: number;
+  screenshot_url: string;
+  status: 'pending_ai' | 'ai_verified' | 'admin_approved' | 'rejected';
+  restaurant_id: string | null;
   created_at: string;
   updated_at: string;
 }

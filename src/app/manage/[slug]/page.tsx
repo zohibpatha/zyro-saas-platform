@@ -23,6 +23,25 @@ export default async function ClientManagePage({ params }: { params: Promise<{ s
     notFound()
   }
 
+  const isExpired = restaurant.subscription_end_date && new Date(restaurant.subscription_end_date) < new Date()
+
+  if (isExpired) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4">
+        <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl max-w-md w-full text-center shadow-xl border border-rose-200 dark:border-rose-900">
+          <div className="w-16 h-16 bg-rose-100 dark:bg-rose-500/20 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          </div>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Subscription Expired</h1>
+          <p className="text-slate-600 dark:text-slate-400 mb-6">Your access to the Zyro platform has expired. Please renew your subscription to restore your public page and dashboard. All your data is safely backed up.</p>
+          <a href={`/checkout?plan=${restaurant.plan_tier === 'Basic' ? '199' : '399'}&restaurant_id=${restaurant.id}`} className="block w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition-colors">
+            Renew Subscription
+          </a>
+        </div>
+      </div>
+    )
+  }
+
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
   return (
