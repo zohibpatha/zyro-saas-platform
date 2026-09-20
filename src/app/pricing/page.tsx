@@ -118,23 +118,25 @@ export default async function PricingPage() {
               
               <div className="mb-6">
                 <div className="flex items-baseline text-4xl font-extrabold text-slate-900 dark:text-white">
-                  {tier.priceMonthly}
-                  <span className="ml-1 text-base font-medium text-slate-500 dark:text-slate-400">/mo</span>
+                  {tier.setupFee}
+                  <span className="ml-2 text-lg font-medium text-slate-500 dark:text-slate-400 line-through">
+                    {tier.setupStrikethrough || `₹${parseInt(tier.setupFee.replace('₹', '')) + parseInt(tier.priceMonthly.replace('₹', ''))}`}
+                  </span>
+                </div>
+                <div className="text-sm font-semibold text-green-600 dark:text-green-400 mt-2 bg-green-100 dark:bg-green-900/30 inline-block px-2 py-1 rounded">
+                  🎉 Pay ONLY setup fee today!
                 </div>
               </div>
 
               <div className={`p-4 rounded-2xl mb-8 border ${tier.mostPopular ? 'bg-indigo-50 dark:bg-indigo-950/30 border-indigo-100 dark:border-indigo-900/50' : 'bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-800'}`}>
-                {tier.setupDiscount && (
-                  <div className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-1">
-                    {tier.setupDiscount} Setup
-                  </div>
-                )}
-                <div className="flex items-baseline gap-2">
-                  <span className="text-xl font-bold text-slate-900 dark:text-white">{tier.setupFee}</span>
-                  {tier.setupStrikethrough && (
-                    <span className="text-slate-400 dark:text-slate-500 line-through text-sm">{tier.setupStrikethrough}</span>
-                  )}
-                  <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Setup fee</span>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-sm font-bold text-slate-900 dark:text-white">Monthly Maintenance: {tier.priceMonthly}/mo</span>
+                </div>
+                <div className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-1">
+                  (1st Month is 100% FREE!)
+                </div>
+                <div className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Maintenance billing starts after 28 days.
                 </div>
               </div>
 
