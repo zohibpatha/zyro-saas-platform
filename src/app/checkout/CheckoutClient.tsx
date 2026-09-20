@@ -171,7 +171,7 @@ export default function CheckoutClient() {
             <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-bold text-slate-600 dark:text-slate-400 shrink-0">1</div>
             <div>
               <h4 className="font-bold text-slate-900 dark:text-white">Complete the payment</h4>
-              <p className="text-sm text-slate-500">Use the button or QR code above to pay ₹{amount}.</p>
+              <p className="text-sm text-slate-500">Use the button or QR code above to pay ₹{totalAmount}.</p>
             </div>
           </div>
           <div className="flex gap-4">
