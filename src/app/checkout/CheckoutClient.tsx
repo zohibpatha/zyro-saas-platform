@@ -9,7 +9,22 @@ export default function CheckoutClient() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const planParam = searchParams.get('plan') || '399'
-  const amount = parseInt(planParam, 10)
+  const isRenewal = !!searchParams.get('restaurant_id')
+  const restaurantId = searchParams.get('restaurant_id')
+  
+  // Base monthly cost
+  const monthlyCost = parseInt(planParam, 10) || 399
+  
+  // Calculate total amount (Add Setup Fee for new users)
+  let totalAmount = monthlyCost
+  let setupFee = 0
+  
+  if (!isRenewal) {
+    if (monthlyCost === 199) setupFee = 499
+    else if (monthlyCost === 399) setupFee = 999
+    else if (monthlyCost === 699) setupFee = 1499
+    totalAmount += setupFee
+  }
   
   const [phoneNumber, setPhoneNumber] = useState('')
   const [file, setFile] = useState<File | null>(null)
@@ -21,7 +36,7 @@ export default function CheckoutClient() {
 
   const upiId = '7067615270@ybl' // Replace with your actual UPI ID
   const payeeName = 'Zyro'
-  const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${amount}&cu=INR`
+  const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${totalAmount}&cu=INR`
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -71,7 +86,7 @@ export default function CheckoutClient() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           phone_number: phoneNumber,
-          amount,
+          amount: totalAmount,
           screenshot_url: publicUrl,
           months: 1,
           restaurant_id: searchParams.get('restaurant_id') || null
@@ -112,8 +127,14 @@ export default function CheckoutClient() {
         </div>
 
         <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 mb-8 text-center">
-          <div className="text-4xl font-extrabold text-slate-900 dark:text-white mb-2">₹{amount}</div>
-          <p className="text-sm text-slate-500 font-medium mb-6">Subscription for 28 Days (1 Month)</p>
+          <div className="text-4xl font-extrabold text-slate-900 dark:text-white mb-2">₹{totalAmount}</div>
+          {isRenewal ? (
+            <p className="text-sm text-slate-500 font-medium mb-6">Subscription Renewal (28 Days)</p>
+          ) : (
+            <p className="text-sm text-slate-500 font-medium mb-6">
+              ₹{monthlyCost} (28 Days) + ₹{setupFee} (One-time Setup)
+            </p>
+          )}
           
           <a 
             href={upiLink}
