@@ -2,7 +2,11 @@
 
 import { createClient } from "@/lib/supabase/server"
 
-export async function claimLoyaltyStamp(restaurantId: string, phone: string) {
+export async function claimLoyaltyStamp(
+  restaurantId: string, 
+  phone: string, 
+  vipDetails?: { name?: string, dob?: string, anniversary?: string }
+) {
   const supabase = await createClient()
   const cleanPhone = phone.replace(/\D/g, '') // Keep only digits
 
@@ -33,12 +37,19 @@ export async function claimLoyaltyStamp(restaurantId: string, phone: string) {
     }
 
     // Increment visit
+    const updatePayload: any = {
+      visits: existingCustomer.visits + 1,
+      last_visit: new Date().toISOString()
+    }
+    
+    // Update VIP details if provided
+    if (vipDetails?.name) updatePayload.customer_name = vipDetails.name
+    if (vipDetails?.dob) updatePayload.dob = vipDetails.dob
+    if (vipDetails?.anniversary) updatePayload.anniversary = vipDetails.anniversary
+
     const { data: updated, error: updateError } = await supabase
       .from('loyalty_customers')
-      .update({ 
-        visits: existingCustomer.visits + 1,
-        last_visit: new Date().toISOString()
-      })
+      .update(updatePayload)
       .eq('id', existingCustomer.id)
       .select('visits')
       .single()
@@ -47,11 +58,19 @@ export async function claimLoyaltyStamp(restaurantId: string, phone: string) {
     return { success: true, visits: updated.visits, isNew: false }
   } else {
     // Create new customer
+    const insertPayload: any = { 
+      restaurant_id: restaurantId, 
+      phone: cleanPhone, 
+      visits: 1 
+    }
+    
+    if (vipDetails?.name) insertPayload.customer_name = vipDetails.name
+    if (vipDetails?.dob) insertPayload.dob = vipDetails.dob
+    if (vipDetails?.anniversary) insertPayload.anniversary = vipDetails.anniversary
+
     const { data: inserted, error: insertError } = await supabase
       .from('loyalty_customers')
-      .insert([
-        { restaurant_id: restaurantId, phone: cleanPhone, visits: 1 }
-      ])
+      .insert([insertPayload])
       .select('visits')
       .single()
 

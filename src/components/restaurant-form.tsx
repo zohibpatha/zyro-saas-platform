@@ -145,6 +145,7 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
                 <option value="Hotel">Hotel</option>
                 <option value="Gym">Gym / Fitness</option>
                 <option value="Salon">Salon</option>
+                <option value="Clothing & Retail">Clothing & Retail</option>
                 <option value="Other">Other</option>
               </select>
             </div>
