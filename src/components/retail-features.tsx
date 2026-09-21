@@ -9,76 +9,147 @@ import { Gift, CalendarDays, Ticket, Loader2 } from 'lucide-react'
 export function LuckySpin({ onWin }: { onWin: (prize: string) => void }) {
   const [isSpinning, setIsSpinning] = useState(false)
   const [wonPrize, setWonPrize] = useState<string | null>(null)
-  
-  const prizes = ["5% OFF", "10% OFF", "FREE SOCKS", "₹100 WALLET", "Better luck next time!", "2% OFF"]
+  const [rotation, setRotation] = useState(0)
+
+  // Configuration for the wheel
+  const prizes = [
+    { label: "2% OFF", color: "#FF3B30", probability: 0.45 },
+    { label: "5% OFF", color: "#FF9500", probability: 0.35 },
+    { label: "10% OFF", color: "#4CD964", probability: 0.10 },
+    { label: "30% OFF", color: "#5AC8FA", probability: 0.04 },
+    { label: "50% OFF", color: "#007AFF", probability: 0.01 },
+    { label: "TRY AGAIN", color: "#5856D6", probability: 0.05 }
+  ]
+
+  const numSlices = prizes.length
+  const sliceAngle = 360 / numSlices
 
   const spinWheel = () => {
     if (isSpinning || wonPrize) return
     setIsSpinning(true)
     
-    // Simulate spinning delay
+    const rand = Math.random()
+    let cumulative = 0
+    let winningIndex = 0
+    for (let i = 0; i < prizes.length; i++) {
+      cumulative += prizes[i].probability
+      if (rand <= cumulative) {
+        winningIndex = i
+        break
+      }
+    }
+
+    // Calculate rotation to stop exactly at the winning slice
+    // Pointer is at the top (0 degrees or 360 degrees).
+    // The winning slice's center must end up at the top.
+    const sliceCenterAngle = winningIndex * sliceAngle + (sliceAngle / 2)
+    // We want to rotate so that (sliceCenterAngle + finalRotation) % 360 = 360 (or 0)
+    const extraSpins = 5 * 360 // Spin 5 times
+    const targetRotation = extraSpins + (360 - sliceCenterAngle)
+    
+    // Add some randomness within the slice so it doesn't land exactly in the center every time
+    const randomOffset = (Math.random() - 0.5) * (sliceAngle * 0.8)
+    const finalRotation = rotation + targetRotation + randomOffset - (rotation % 360)
+
+    setRotation(finalRotation)
+    
     setTimeout(() => {
-      // Pick a random prize, weighted heavily towards smaller discounts
-      const rand = Math.random()
-      let prizeIndex = 5; // 2% off default
-      if (rand > 0.9) prizeIndex = 1; // 10%
-      else if (rand > 0.7) prizeIndex = 0; // 5%
-      else if (rand > 0.5) prizeIndex = 2; // Socks
-      else if (rand > 0.3) prizeIndex = 3; // Wallet
-      else if (rand > 0.1) prizeIndex = 4; // Better luck
-      
-      const prize = prizes[prizeIndex]
-      setWonPrize(prize)
+      setWonPrize(prizes[winningIndex].label)
       setIsSpinning(false)
-      onWin(prize)
-    }, 2500)
+      onWin(prizes[winningIndex].label)
+    }, 4000) // 4 seconds spin duration
+  }
+
+  // Math helper for drawing SVG slices
+  const polarToCartesian = (centerX: number, centerY: number, radius: number, angleInDegrees: number) => {
+    const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180.0;
+    return {
+      x: centerX + radius * Math.cos(angleInRadians),
+      y: centerY + radius * Math.sin(angleInRadians)
+    };
+  }
+
+  const describeArc = (x: number, y: number, radius: number, startAngle: number, endAngle: number) => {
+    const start = polarToCartesian(x, y, radius, endAngle);
+    const end = polarToCartesian(x, y, radius, startAngle);
+    const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+    return [
+      "M", x, y,
+      "L", start.x, start.y, 
+      "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y,
+      "Z"
+    ].join(" ");
   }
 
   return (
-    <div className="flex flex-col items-center justify-center p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden relative">
-      <div className="absolute top-0 right-0 p-4">
-        <Gift className="w-6 h-6 text-indigo-500 opacity-20" />
+    <div className="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-slate-800 dark:to-slate-900 rounded-3xl shadow-xl overflow-hidden relative border-2 border-white/50 dark:border-slate-700">
+      <div className="absolute top-0 right-0 p-4 animate-pulse">
+        <Gift className="w-8 h-8 text-rose-500 opacity-80" />
       </div>
       
-      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 text-center">Lucky Spin Discount!</h3>
-      <p className="text-slate-500 text-sm text-center mb-6">Spin the wheel to win a surprise discount on your purchase today.</p>
+      <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2 text-center drop-shadow-sm">Scan & Spin!</h3>
+      <p className="text-slate-600 dark:text-slate-300 text-sm font-medium text-center mb-6">Test your luck to win a massive discount on your bill right now.</p>
       
-      <div className="relative w-48 h-48 mb-8">
-        {/* Simple CSS Wheel Representation */}
+      <div className="relative w-64 h-64 mb-8 flex items-center justify-center">
+        {/* Pointer */}
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[25px] border-t-slate-900 dark:border-t-white drop-shadow-xl z-20" />
+        
+        {/* The Wheel */}
         <div 
-          className={`w-full h-full rounded-full border-4 border-indigo-500 flex items-center justify-center bg-gradient-to-tr from-indigo-100 to-purple-100 dark:from-indigo-900 dark:to-purple-900 transition-transform duration-[2500ms] ease-out shadow-inner`}
-          style={{ transform: isSpinning ? 'rotate(1080deg)' : 'rotate(0deg)' }}
+          className="w-full h-full rounded-full border-4 border-slate-900 dark:border-white shadow-2xl relative overflow-hidden bg-slate-100"
+          style={{ 
+            transform: `rotate(${rotation}deg)`,
+            transition: 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)'
+          }}
         >
-          {/* Wheel lines */}
-          <div className="absolute w-full h-[2px] bg-indigo-200 dark:bg-indigo-700 rotate-0" />
-          <div className="absolute w-full h-[2px] bg-indigo-200 dark:bg-indigo-700 rotate-45" />
-          <div className="absolute w-full h-[2px] bg-indigo-200 dark:bg-indigo-700 rotate-90" />
-          <div className="absolute w-full h-[2px] bg-indigo-200 dark:bg-indigo-700 rotate-[135deg]" />
+          <svg viewBox="0 0 200 200" className="w-full h-full drop-shadow-md">
+            {prizes.map((prize, index) => {
+              const startAngle = index * sliceAngle;
+              const endAngle = (index + 1) * sliceAngle;
+              const pathData = describeArc(100, 100, 100, startAngle, endAngle);
+              const textAngle = startAngle + sliceAngle / 2;
+              
+              return (
+                <g key={index}>
+                  <path d={pathData} fill={prize.color} stroke="white" strokeWidth="1" />
+                  <text 
+                    x="100" y="30" 
+                    transform={`rotate(${textAngle}, 100, 100)`} 
+                    textAnchor="middle" 
+                    fill="white" 
+                    fontSize="12" 
+                    fontWeight="900"
+                    style={{ textShadow: '1px 1px 2px rgba(0,0,0,0.5)' }}
+                  >
+                    {prize.label}
+                  </text>
+                </g>
+              )
+            })}
+          </svg>
           
-          <div className="z-10 bg-white dark:bg-slate-800 w-12 h-12 rounded-full border-2 border-indigo-500 flex items-center justify-center shadow-lg">
-            <Ticket className="w-5 h-5 text-indigo-600" />
+          {/* Center Hub */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full border-4 border-slate-900 dark:border-slate-700 shadow-inner flex items-center justify-center z-10">
+            <div className="w-4 h-4 bg-slate-900 rounded-full" />
           </div>
         </div>
-        
-        {/* Pointer */}
-        <div className="absolute top-[-10px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[15px] border-t-rose-500 drop-shadow-md z-20" />
       </div>
 
       {wonPrize ? (
-        <div className="text-center animate-in zoom-in duration-300">
-          <p className="text-sm font-medium text-slate-500 mb-1">You won:</p>
-          <p className="text-3xl font-black text-rose-500 mb-4">{wonPrize}</p>
-          <p className="text-xs text-slate-400">Show this screen at the billing counter.</p>
+        <div className="text-center animate-in zoom-in slide-in-from-bottom-4 duration-500 bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-lg border-2 border-rose-100 w-full">
+          <p className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-1">🎉 You Won 🎉</p>
+          <p className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-orange-500 mb-2">{wonPrize}</p>
+          <p className="text-xs font-semibold text-slate-400">Show this screen at the billing counter.</p>
         </div>
       ) : (
         <Button 
           onClick={spinWheel} 
           disabled={isSpinning}
-          className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold h-12 rounded-xl shadow-md hover:shadow-lg transition-all"
+          className="w-full bg-gradient-to-r from-rose-500 to-orange-500 hover:from-rose-600 hover:to-orange-600 text-white font-black text-lg h-14 rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
         >
           {isSpinning ? (
             <>
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              <Loader2 className="mr-2 h-6 w-6 animate-spin" />
               Spinning...
             </>
           ) : (
@@ -89,6 +160,7 @@ export function LuckySpin({ onWin }: { onWin: (prize: string) => void }) {
     </div>
   )
 }
+
 
 export function VipClubForm({ 
   onSubmit, 
