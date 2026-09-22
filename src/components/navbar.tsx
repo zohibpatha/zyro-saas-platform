@@ -34,41 +34,13 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
               <Link href="/pricing" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
                 Pricing
               </Link>
-              {user && (
-                <>
-                  <Link href="/dashboard" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
-                    <LayoutDashboard className="w-4 h-4" /> Dashboard
-                  </Link>
-                  <Link href="/dashboard/settings" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
-                    <Hexagon className="w-4 h-4" /> Settings
-                  </Link>
-                </>
-              )}
             </div>
           </div>
           
           <div className="hidden sm:flex sm:items-center sm:gap-4">
-            {user ? (
-              <div className="flex items-center gap-4 bg-white/50 dark:bg-gray-800/50 border border-gray-200/50 dark:border-gray-700/50 px-4 py-1.5 rounded-full shadow-sm backdrop-blur-sm">
-                <div className="w-6 h-6 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center text-[10px] text-white font-bold">
-                  {user.email?.charAt(0).toUpperCase()}
-                </div>
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-300">{user.email}</span>
-                <div className="w-px h-4 bg-gray-200 dark:bg-gray-700 mx-1"></div>
-                <button className="text-gray-400 hover:text-red-500 transition-colors" onClick={handleSignOut} title="Sign Out">
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Link href="/login" className="text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white px-3 py-2 transition-colors">
-                  Login
-                </Link>
-                <Link href="/pricing">
-                  <Button size="sm" className="h-9 px-5 bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 rounded-full font-medium transition-all shadow-md shadow-black/10">Get Started</Button>
-                </Link>
-              </div>
-            )}
+            <Link href="/trial">
+              <Button size="sm" className="h-9 px-5 bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 rounded-full font-medium transition-all shadow-md shadow-black/10">Start 7-Day Free Trial</Button>
+            </Link>
           </div>
 
           <div className="flex items-center sm:hidden">
@@ -85,34 +57,9 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
             <Link href="/pricing" className="flex items-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
               Pricing
             </Link>
-            {user && (
-              <>
-                <Link href="/dashboard" className="flex items-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                  <LayoutDashboard className="w-5 h-5" /> Dashboard
-                </Link>
-                <Link href="/dashboard/settings" className="flex items-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                  <Hexagon className="w-5 h-5" /> Settings
-                </Link>
-              </>
-            )}
-            {!user && (
-              <>
-                <Link href="/login" className="block px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                  Login
-                </Link>
-                <Link href="/pricing" className="block px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                  Get Started
-                </Link>
-              </>
-            )}
-            {user && (
-              <button
-                onClick={handleSignOut}
-                className="flex items-center gap-2 w-full text-left px-4 py-3 rounded-xl text-base font-medium text-red-600 hover:bg-red-50 mt-2 border-t border-gray-50 pt-3"
-              >
-                <LogOut className="w-5 h-5" /> Sign out
-              </button>
-            )}
+            <Link href="/trial" className="block px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+              Start 7-Day Free Trial
+            </Link>
           </div>
         </div>
       )}
