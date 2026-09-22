@@ -40,7 +40,7 @@ export async function updateSession(request: NextRequest) {
 
   if (
     !user &&
-    (pathname.startsWith("/admin") || pathname.startsWith("/dashboard"))
+    (pathname.startsWith("/zyro-super-admin-786") || pathname.startsWith("/dashboard"))
   ) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";

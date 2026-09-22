@@ -29,7 +29,7 @@ export default function AdminActions({ restaurant }: { restaurant: Restaurant })
 
   return (
     <div className="flex items-center justify-end gap-2">
-      <Link href={`/admin/edit/${restaurant.id}`}>
+      <Link href={`/zyro-super-admin-786/edit/${restaurant.id}`}>
         <Button variant="outline" size="icon" title="Edit">
           <Edit className="h-4 w-4" />
         </Button>

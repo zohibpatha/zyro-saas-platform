@@ -35,25 +35,14 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
                 Pricing
               </Link>
               {user && (
-                isAdmin ? (
-                  <>
-                    <Link href="/admin" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
-                      <LayoutDashboard className="w-4 h-4" /> Businesses
-                    </Link>
-                    <Link href="/dashboard/settings" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
-                      <Hexagon className="w-4 h-4" /> Settings
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <Link href="/dashboard" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
-                      <LayoutDashboard className="w-4 h-4" /> Dashboard
-                    </Link>
-                    <Link href="/dashboard/settings" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
-                      <Hexagon className="w-4 h-4" /> Settings
-                    </Link>
-                  </>
-                )
+                <>
+                  <Link href="/dashboard" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
+                    <LayoutDashboard className="w-4 h-4" /> Dashboard
+                  </Link>
+                  <Link href="/dashboard/settings" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100/50 dark:hover:bg-gray-800/50 px-3 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2">
+                    <Hexagon className="w-4 h-4" /> Settings
+                  </Link>
+                </>
               )}
             </div>
           </div>
@@ -96,17 +85,7 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
             <Link href="/pricing" className="flex items-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
               Pricing
             </Link>
-            {user && isAdmin && (
-              <>
-                <Link href="/admin" className="flex items-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                  <LayoutDashboard className="w-5 h-5" /> Businesses
-                </Link>
-                <Link href="/dashboard/settings" className="flex items-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                  <Hexagon className="w-5 h-5" /> Settings
-                </Link>
-              </>
-            )}
-            {user && !isAdmin && (
+            {user && (
               <>
                 <Link href="/dashboard" className="flex items-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
                   <LayoutDashboard className="w-5 h-5" /> Dashboard

@@ -10,6 +10,22 @@ export const dynamic = 'force-dynamic'
 
 export default async function AdminDashboard() {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user?.email) {
+    return <div className="p-8 text-red-500">Access Denied</div>
+  }
+
+  const { data: adminUser } = await supabase
+    .from('admin_users')
+    .select('email')
+    .eq('email', user.email)
+    .maybeSingle()
+
+  if (!adminUser) {
+    return <div className="p-8 text-red-500 font-bold text-center mt-20 text-2xl">Unauthorized. This incident will be reported.</div>
+  }
+
   const { data: restaurants, error } = await supabase
     .from('restaurants')
     .select('*')
@@ -26,7 +42,7 @@ export default async function AdminDashboard() {
           <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Admin Dashboard</h1>
           <p className="text-sm text-gray-500 mt-1">Manage all businesses across the platform</p>
         </div>
-        <Link href="/admin/create">
+        <Link href="/zyro-super-admin-786/create">
           <Button className="bg-black text-white hover:bg-gray-800 shadow-sm h-9 px-4 rounded-md text-sm transition-all">
             <Plus className="w-4 h-4 mr-2" />
             New Business
