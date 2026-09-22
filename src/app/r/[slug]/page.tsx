@@ -51,8 +51,9 @@ export default async function RestaurantPage({ params }: PageProps) {
   }
 
   const isExpired = restaurant.subscription_end_date && new Date(restaurant.subscription_end_date) < new Date()
+  const isTrialExpired = restaurant.trial_expires_at && new Date(restaurant.trial_expires_at) < new Date()
 
-  if (isExpired) {
+  if (isExpired || isTrialExpired) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4">
         <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl max-w-md w-full text-center shadow-xl border border-slate-200 dark:border-slate-800">

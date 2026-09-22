@@ -10,6 +10,7 @@ export default function CheckoutClient() {
   const searchParams = useSearchParams()
   const planParam = searchParams.get('plan') || '399'
   const isRenewal = !!searchParams.get('restaurant_id')
+  const isTrialConversion = searchParams.get('is_trial_conversion') === 'true'
   const restaurantId = searchParams.get('restaurant_id')
   
   // Base monthly cost
@@ -19,12 +20,12 @@ export default function CheckoutClient() {
   let totalAmount = monthlyCost
   let setupFee = 0
   
-  if (!isRenewal) {
+  if (!isRenewal || isTrialConversion) {
     if (monthlyCost === 199) setupFee = 499
     else if (monthlyCost === 399) setupFee = 999
     else if (monthlyCost === 699) setupFee = 1499
     
-    // As per new offer: First month is ONLY setup fee
+    // As per offer: First month is ONLY setup fee
     totalAmount = setupFee
   }
   
@@ -130,7 +131,7 @@ export default function CheckoutClient() {
 
         <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 mb-8 text-center">
           <div className="text-4xl font-extrabold text-slate-900 dark:text-white mb-2">₹{totalAmount}</div>
-          {isRenewal ? (
+          {isRenewal && !isTrialConversion ? (
             <p className="text-sm text-slate-500 font-medium mb-6">Subscription Renewal (28 Days)</p>
           ) : (
             <div className="mb-6">

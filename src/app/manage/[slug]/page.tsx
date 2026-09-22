@@ -24,21 +24,33 @@ export default async function ClientManagePage({ params }: { params: Promise<{ s
   }
 
   const isExpired = restaurant.subscription_end_date && new Date(restaurant.subscription_end_date) < new Date()
+  const isTrialExpired = restaurant.trial_expires_at && new Date(restaurant.trial_expires_at) < new Date()
+  const isTrialActive = restaurant.trial_expires_at && new Date(restaurant.trial_expires_at) >= new Date()
+  const trialDaysLeft = restaurant.trial_expires_at ? Math.ceil((new Date(restaurant.trial_expires_at).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)) : 0
 
-  if (isExpired) {
+  if (isExpired || isTrialExpired) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4">
-        <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl max-w-md w-full text-center shadow-xl border border-rose-200 dark:border-rose-900">
-          <div className="w-16 h-16 bg-rose-100 dark:bg-rose-500/20 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+        <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl max-w-md w-full text-center shadow-2xl border-2 border-rose-200 dark:border-rose-900 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 bg-rose-500 text-white text-xs font-bold py-1">
+            {isTrialExpired ? '7-DAY TRIAL EXPIRED' : 'SUBSCRIPTION EXPIRED'}
           </div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Subscription Expired</h1>
-          <p className="text-slate-600 dark:text-slate-400 mb-6">Your access to the Zyro platform has expired. Please renew your subscription to restore your public page and dashboard. All your data is safely backed up.</p>
+          <div className="w-20 h-20 bg-rose-100 dark:bg-rose-500/20 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-6 mt-4">
+            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+          </div>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">
+            {isTrialExpired ? 'Your Trial has Ended' : 'Subscription Expired'}
+          </h1>
+          <p className="text-slate-600 dark:text-slate-400 mb-8 font-medium">
+            {isTrialExpired 
+              ? "Your 7-Day Free Trial has ended. To keep your Public QR Page active and retain your customer data, please pay the one-time Setup Fee." 
+              : "Your access to the Zyro platform has expired. Please renew your subscription to restore your public page and dashboard. All your data is safely backed up."}
+          </p>
           <Link
-            href={`/checkout?plan=${restaurant.plan_tier === 'Basic' ? '199' : '399'}&restaurant_id=${restaurant.id}`}
-            className="block w-full text-center bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition-colors"
+            href={`/checkout?plan=${restaurant.plan_tier === 'Basic' ? '199' : '399'}&restaurant_id=${restaurant.id}${isTrialExpired ? '&is_trial_conversion=true' : ''}`}
+            className="block w-full text-center bg-indigo-600 text-white font-bold py-4 rounded-2xl hover:bg-indigo-700 transition-colors shadow-lg hover:shadow-xl hover:-translate-y-1"
           >
-            Renew Subscription
+            {isTrialExpired ? 'Pay ₹999 Setup Fee to Unlock' : 'Renew Subscription'}
           </Link>
         </div>
       </div>
@@ -49,6 +61,26 @@ export default async function ClientManagePage({ params }: { params: Promise<{ s
 
   return (
     <div className="space-y-12 animate-in fade-in duration-700 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+      
+      {isTrialActive && (
+        <div className="bg-amber-100 border border-amber-200 rounded-2xl p-4 flex items-center justify-between shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center text-white font-bold animate-pulse">
+              {trialDaysLeft}
+            </div>
+            <div>
+              <h3 className="font-bold text-amber-900">Days Left in Free Trial</h3>
+              <p className="text-sm text-amber-700 font-medium">Your trial expires soon. Upgrade to keep your QR live.</p>
+            </div>
+          </div>
+          <Link
+            href={`/checkout?plan=399&restaurant_id=${restaurant.id}&is_trial_conversion=true`}
+            className="bg-amber-500 hover:bg-amber-600 text-white px-5 py-2 rounded-xl font-bold text-sm shadow-md transition-all hover:-translate-y-0.5"
+          >
+            Upgrade Now
+          </Link>
+        </div>
+      )}
       <div className="flex flex-col gap-2">
         <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
           Manage {restaurant.name} <Sparkles className="w-8 h-8 text-indigo-500" />
