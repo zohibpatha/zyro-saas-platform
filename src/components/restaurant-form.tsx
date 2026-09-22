@@ -30,6 +30,7 @@ const restaurantSchema = z.object({
   loyalty_offer: z.string().optional().or(z.literal('')),
   reward_stamps: z.coerce.number().min(1).max(100).default(5),
   plan_tier: z.string().default('Pro'),
+  menu_url: z.string().optional().or(z.literal('')),
 })
 
 type FormValues = z.infer<typeof restaurantSchema>
@@ -38,6 +39,7 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
   const router = useRouter()
   const [logoUrl, setLogoUrl] = useState(restaurant?.logo_url || '')
   const [coverImageUrl, setCoverImageUrl] = useState(restaurant?.cover_image || '')
+  const [menuUrl, setMenuUrl] = useState(restaurant?.menu_url || '')
   const [isLoading, setIsLoading] = useState(false)
 
   const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<FormValues>({
@@ -58,6 +60,7 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
       loyalty_offer: restaurant?.loyalty_offer || '',
       reward_stamps: restaurant?.reward_stamps || 5,
       plan_tier: restaurant?.plan_tier || 'Pro',
+      menu_url: restaurant?.menu_url || '',
     }
   })
 
@@ -77,6 +80,7 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
     })
     if (logoUrl) formData.append('logo_url', logoUrl)
     if (coverImageUrl) formData.append('cover_image', coverImageUrl)
+    if (menuUrl) formData.append('menu_url', menuUrl)
 
     try {
       if (isClientManage && restaurant?.slug) {
@@ -265,7 +269,7 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-slate-100 dark:border-slate-800">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pt-8 border-t border-slate-100 dark:border-slate-800">
         <div className="space-y-3">
           <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Logo Image</Label>
           <div className="p-6 border-2 border-slate-200/60 dark:border-slate-700/60 border-dashed rounded-2xl bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm transition-all hover:bg-white/50 dark:hover:bg-slate-900/50 hover:border-indigo-500/30">
@@ -288,6 +292,23 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
               restaurantId={restaurant?.id}
               isClientManage={isClientManage}
               slug={restaurant?.slug}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <Label className="text-sm font-medium text-slate-700 dark:text-slate-300 flex items-center gap-2">
+            <span className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-bold">NEW</span>
+            Digital Menu (PDF/Image)
+          </Label>
+          <div className="p-6 border-2 border-slate-200/60 dark:border-slate-700/60 border-dashed rounded-2xl bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm transition-all hover:bg-white/50 dark:hover:bg-slate-900/50 hover:border-indigo-500/30">
+            <ImageUpload 
+              currentUrl={menuUrl} 
+              onUpload={setMenuUrl} 
+              restaurantId={restaurant?.id}
+              isClientManage={isClientManage}
+              slug={restaurant?.slug}
+              acceptPdf={true}
             />
           </div>
         </div>

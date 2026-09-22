@@ -13,9 +13,10 @@ interface ImageUploadProps {
   restaurantId?: string
   isClientManage?: boolean
   slug?: string
+  acceptPdf?: boolean
 }
 
-export default function ImageUpload({ onUpload, currentUrl, restaurantId, isClientManage, slug }: ImageUploadProps) {
+export default function ImageUpload({ onUpload, currentUrl, restaurantId, isClientManage, slug, acceptPdf }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [error, setError] = useState<string>('')
 
@@ -23,8 +24,8 @@ export default function ImageUpload({ onUpload, currentUrl, restaurantId, isClie
     const file = e.target.files?.[0]
     if (!file) return
 
-    if (!file.type.startsWith('image/')) {
-      setError('Please upload an image file')
+    if (!file.type.startsWith('image/') && (!acceptPdf || file.type !== 'application/pdf')) {
+      setError(acceptPdf ? 'Please upload an image or PDF file' : 'Please upload an image file')
       return
     }
 
@@ -60,14 +61,21 @@ export default function ImageUpload({ onUpload, currentUrl, restaurantId, isClie
   return (
     <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:bg-gray-50 transition-colors relative">
       {currentUrl ? (
-        <div className="relative aspect-video w-full max-w-sm mx-auto rounded overflow-hidden group">
-          <Image 
-            src={currentUrl} 
-            alt="Uploaded image" 
-            fill 
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+        <div className="relative aspect-video w-full max-w-sm mx-auto rounded overflow-hidden group bg-slate-100 flex items-center justify-center">
+          {currentUrl.endsWith('.pdf') ? (
+            <div className="flex flex-col items-center justify-center p-4">
+              <span className="font-bold text-slate-500 mb-2">PDF Document</span>
+              <a href={currentUrl} target="_blank" className="text-blue-500 underline text-sm relative z-20">View PDF</a>
+            </div>
+          ) : (
+            <Image 
+              src={currentUrl} 
+              alt="Uploaded file" 
+              fill 
+              className="object-cover"
+            />
+          )}
+          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
             <Button type="button" variant="destructive" size="sm" onClick={() => onUpload('')}>
               <X className="w-4 h-4 mr-2" /> Remove
             </Button>
@@ -88,10 +96,10 @@ export default function ImageUpload({ onUpload, currentUrl, restaurantId, isClie
       
       <input 
         type="file" 
-        accept="image/*"
+        accept={acceptPdf ? "image/*,application/pdf" : "image/*"}
         onChange={handleFileChange}
         disabled={isUploading}
-        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed z-0"
       />
       {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
     </div>

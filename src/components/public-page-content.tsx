@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import type { RestaurantWithPhotos } from '@/lib/types'
-import { Star, MapPin, Instagram, Phone, MessageCircle, Globe, ChevronRight, Loader2, CheckCircle2, Gift, Activity, Crown, X } from 'lucide-react'
+import { Star, MapPin, Instagram, Phone, MessageCircle, Globe, ChevronRight, Loader2, CheckCircle2, Gift, Activity, Crown, X, Utensils, ArrowRight } from 'lucide-react'
 import { submitPrivateFeedback } from '@/actions/feedback'
 import { claimLoyaltyStamp } from '@/actions/loyalty'
 import { LuckySpin, VipClubForm } from './retail-features'
@@ -108,6 +108,32 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
           </span>
         </div>
       )}
+
+      {/* Digital Menu Button */}
+      {restaurant.menu_url && (
+        <a 
+          href={restaurant.menu_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-[2rem] p-5 shadow-xl shadow-orange-500/20 relative overflow-hidden flex items-center justify-between group transition-all hover:scale-[1.02]"
+        >
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
+          <div className="absolute -right-4 -top-10 w-32 h-32 bg-white/20 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
+          
+          <div className="relative z-10 flex items-center gap-4">
+            <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-md border border-white/20 shadow-inner">
+              <Utensils className="w-8 h-8 text-white drop-shadow-md" />
+            </div>
+            <div className="text-left">
+              <h3 className="font-extrabold text-2xl tracking-tight leading-none mb-1">View Digital Menu</h3>
+              <p className="text-orange-100 font-medium text-sm flex items-center gap-1">
+                Tap to explore our dishes <ArrowRight className="w-4 h-4 inline" />
+              </p>
+            </div>
+          </div>
+        </a>
+      )}
+
 
       {isRetail ? (
         <div className="flex flex-col gap-6">

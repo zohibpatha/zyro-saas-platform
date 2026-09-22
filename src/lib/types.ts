@@ -19,6 +19,8 @@ export interface Restaurant {
   primary_color: string;
   is_active: boolean;
   owner_email: string;
+  trial_expires_at: string | null;
+  menu_url: string | null;
   created_at: string;
   updated_at: string;
 }
