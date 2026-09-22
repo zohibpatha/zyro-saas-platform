@@ -6,14 +6,19 @@ import { Copy, Download, Check } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 export default function QRCodeGenerator({ slug, restaurantName }: { slug: string, restaurantName: string }) {
-  const [siteUrl, setSiteUrl] = useState(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000')
+  const [siteUrl, setSiteUrl] = useState('')
   const [copied, setCopied] = useState(false)
 
   useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_SITE_URL) {
-      setSiteUrl(window.location.origin)
-    }
+    // ALWAYS use the actual origin in the browser to ensure the QR code matches where they are currently deployed.
+    // If they are on Vercel, it uses the Vercel URL.
+    setSiteUrl(window.location.origin)
   }, [])
+
+  // Avoid rendering the wrong QR code before useEffect runs
+  if (!siteUrl) {
+    return <div className="animate-pulse bg-slate-100 rounded-2xl w-48 h-48"></div>
+  }
 
   const url = `${siteUrl}/r/${slug}`
 
@@ -40,12 +45,13 @@ export default function QRCodeGenerator({ slug, restaurantName }: { slug: string
 
   return (
     <div className="flex flex-col items-center space-y-4 w-full">
-      <div className="bg-white p-2 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center">
+      <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center">
         <QRCodeCanvas 
           id={`qr-code-${slug}`}
           value={url}
-          size={160}
-          level="H"
+          size={512}
+          style={{ width: '100%', maxWidth: '200px', height: 'auto' }}
+          level="M"
           includeMargin={true}
         />
       </div>
