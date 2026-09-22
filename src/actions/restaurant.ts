@@ -68,6 +68,7 @@ export async function createRestaurant(formData: FormData) {
     loyalty_offer: formData.get('loyalty_offer') as string || null,
     reward_stamps: parseInt(formData.get('reward_stamps') as string || '5', 10),
     plan_tier: formData.get('plan_tier') as string || 'Pro',
+    menu_url: formData.get('menu_url') as string || null,
     owner_email: (formData.get('owner_email') as string) || user.email,
   })
 
@@ -99,6 +100,7 @@ export async function updateRestaurant(id: string, formData: FormData) {
     loyalty_offer: formData.get('loyalty_offer') as string || null,
     reward_stamps: parseInt(formData.get('reward_stamps') as string || '5', 10),
     plan_tier: formData.get('plan_tier') as string || 'Pro',
+    menu_url: formData.get('menu_url') as string || null,
   }
 
   // Admin can change owner_email
