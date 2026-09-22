@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import type { RestaurantWithPhotos } from '@/lib/types'
-import { Star, MapPin, Instagram, Phone, MessageCircle, Globe, ChevronRight, Loader2, CheckCircle2, Gift, Activity, Crown } from 'lucide-react'
+import { Star, MapPin, Instagram, Phone, MessageCircle, Globe, ChevronRight, Loader2, CheckCircle2, Gift, Activity, Crown, X } from 'lucide-react'
 import { submitPrivateFeedback } from '@/actions/feedback'
 import { claimLoyaltyStamp } from '@/actions/loyalty'
 import { LuckySpin, VipClubForm } from './retail-features'
@@ -17,6 +17,7 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
   const [loyaltyPhone, setLoyaltyPhone] = useState('')
   const [isClaiming, setIsClaiming] = useState(false)
   const [loyaltyVisits, setLoyaltyVisits] = useState<number | null>(null)
+  const [showRewardPopup, setShowRewardPopup] = useState(false)
 
   const photos = [...(restaurant.food_photos || [])].sort((a, b) => a.sort_order - b.sort_order)
 
@@ -60,6 +61,9 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
       const result = await claimLoyaltyStamp(restaurant.id, loyaltyPhone)
       if (result.success) {
         setLoyaltyVisits(result.visits || 1)
+        if ((result.visits || 1) % (restaurant.reward_stamps || 5) === 0) {
+          setShowRewardPopup(true)
+        }
       } else {
         alert(result.error)
       }
@@ -411,6 +415,46 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Confetti Reward Popup */}
+      {showRewardPopup && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white rounded-[2rem] p-8 max-w-sm w-full shadow-2xl relative flex flex-col items-center text-center animate-in zoom-in-95 duration-500 mt-12">
+            <div className="absolute -top-12 w-24 h-24 bg-gradient-to-tr from-amber-400 to-orange-500 rounded-full flex items-center justify-center shadow-xl border-4 border-white animate-bounce">
+              <Gift className="w-12 h-12 text-white" />
+            </div>
+            
+            <button 
+              onClick={() => setShowRewardPopup(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-100 rounded-full p-2"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            
+            <div className="mt-8 mb-2 flex gap-2 justify-center text-2xl">
+              <span className="animate-pulse delay-75">🎉</span>
+              <span className="animate-pulse delay-150">🎊</span>
+              <span className="animate-pulse delay-300">🎉</span>
+            </div>
+            
+            <h2 className="text-2xl font-black text-slate-800 mb-2">Reward Unlocked!</h2>
+            <p className="text-slate-600 font-medium mb-6">
+              {restaurant.loyalty_offer || "You've completed your stamps and unlocked a special surprise!"}
+            </p>
+            
+            <div className="bg-amber-50 text-amber-800 border border-amber-200 rounded-xl p-4 w-full mb-6 text-sm font-semibold">
+              Show this screen at the counter to claim your reward.
+            </div>
+            
+            <button 
+              onClick={() => setShowRewardPopup(false)}
+              className="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-slate-800 active:scale-95 transition-all shadow-lg"
+            >
+              Awesome, Thanks!
+            </button>
           </div>
         </div>
       )}
