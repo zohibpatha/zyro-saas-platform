@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { phone_number, amount, screenshot_url, months } = body
+    const { phone_number, amount, screenshot_url, months, saarthi_code } = body
 
     if (!phone_number || !amount || !screenshot_url) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -20,6 +20,7 @@ export async function POST(req: Request) {
         amount,
         months: months || 1,
         screenshot_url,
+        saarthi_code,
         status: 'pending_ai'
       })
       .select()
@@ -71,10 +72,65 @@ export async function POST(req: Request) {
           throw rpcError;
         }
 
-        const { data: currentRest } = await supabase.from('restaurants').select('slug').eq('id', body.restaurant_id).single()
+        const { data: currentRest } = await supabase.from('restaurants').select('slug, referred_by_code').eq('id', body.restaurant_id).single()
+
+        if (currentRest?.referred_by_code) {
+          const { data: affiliate } = await supabase
+            .from('affiliates')
+            .select('id, wallet_balance, total_earned')
+            .eq('saarthi_code', currentRest.referred_by_code)
+            .single()
+
+          if (affiliate) {
+            await supabase
+              .from('affiliates')
+              .update({
+                wallet_balance: (affiliate.wallet_balance || 0) + 20,
+                total_earned: (affiliate.total_earned || 0) + 20
+              })
+              .eq('id', affiliate.id)
+
+            await supabase
+              .from('affiliate_ledger')
+              .insert({
+                affiliate_id: affiliate.id,
+                amount: 20,
+                type: 'renewal_commission',
+                status: 'completed'
+              })
+          }
+        }
+
         return NextResponse.json({ success: true, isRenewal: true, slug: currentRest?.slug })
       }
       
+      if (saarthi_code) {
+        const { data: affiliate } = await supabase
+          .from('affiliates')
+          .select('id, wallet_balance, total_earned')
+          .eq('saarthi_code', saarthi_code)
+          .single()
+
+        if (affiliate) {
+          await supabase
+            .from('affiliates')
+            .update({
+              wallet_balance: (affiliate.wallet_balance || 0) + 100,
+              total_earned: (affiliate.total_earned || 0) + 100
+            })
+            .eq('id', affiliate.id)
+
+          await supabase
+            .from('affiliate_ledger')
+            .insert({
+              affiliate_id: affiliate.id,
+              amount: 100,
+              type: 'signup_commission',
+              status: 'completed'
+            })
+        }
+      }
+
       return NextResponse.json({ success: true, sessionId: session.id })
     } else {
       await supabase

@@ -30,6 +30,7 @@ export default function CheckoutClient() {
   }
   
   const [phoneNumber, setPhoneNumber] = useState('')
+  const [saarthiCode, setSaarthiCode] = useState('')
   const [file, setFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [isVerifying, setIsVerifying] = useState(false)
@@ -92,7 +93,8 @@ export default function CheckoutClient() {
           amount: totalAmount,
           screenshot_url: publicUrl,
           months: 1,
-          restaurant_id: searchParams.get('restaurant_id') || null
+          restaurant_id: searchParams.get('restaurant_id') || null,
+          saarthi_code: saarthiCode
         })
       })
 
@@ -195,6 +197,17 @@ export default function CheckoutClient() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-slate-700 dark:text-slate-300">VIP/Partner Code (Optional)</label>
+            <input 
+              type="text" 
+              value={saarthiCode}
+              onChange={(e) => setSaarthiCode(e.target.value)}
+              placeholder="e.g. VIP50"
+              className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
+            />
+          </div>
+
           <div className="space-y-2">
             <label className="text-sm font-bold text-slate-700 dark:text-slate-300">WhatsApp Number</label>
             <p className="text-xs text-slate-500 mb-2">We use this to create your account and send updates.</p>

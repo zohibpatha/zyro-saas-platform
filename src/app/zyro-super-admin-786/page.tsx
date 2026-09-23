@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge'
 import AdminActions from './admin-actions'
 import { Plus } from 'lucide-react'
+import { getAllPendingWithdrawals, markWithdrawalPaid } from '@/actions/affiliate'
 
 export const dynamic = 'force-dynamic'
 
@@ -34,6 +35,8 @@ export default async function AdminDashboard() {
   if (error) {
     return <div className="p-8 text-red-500">Error loading restaurants</div>
   }
+
+  const { data: withdrawals } = await getAllPendingWithdrawals()
 
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8 animate-in fade-in duration-500">
@@ -88,6 +91,33 @@ export default async function AdminDashboard() {
             )}
           </TableBody>
         </Table>
+      </div>
+
+      <div className="pt-8 space-y-4">
+        <h2 className="text-xl font-semibold tracking-tight text-gray-900">Affiliate Withdrawals</h2>
+        {withdrawals && withdrawals.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {withdrawals.map((w: any) => (
+              <div key={w.id} className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-2">
+                <div className="font-medium text-gray-900">{w.affiliate?.name || 'Unknown'}</div>
+                <div className="text-sm text-gray-500 font-mono">UPI: {w.affiliate?.upi_id || 'N/A'}</div>
+                <div className="text-lg font-bold text-gray-900">₹{w.amount}</div>
+                <form action={async () => {
+                  "use server";
+                  await markWithdrawalPaid(w.id);
+                }} className="mt-2">
+                  <Button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white">
+                    Mark as Paid
+                  </Button>
+                </form>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-sm text-gray-500 py-4 bg-gray-50 rounded-lg text-center border border-gray-100">
+            No pending withdrawals.
+          </div>
+        )}
       </div>
     </div>
   )
