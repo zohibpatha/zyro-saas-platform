@@ -136,6 +136,27 @@ export default async function ClientManagePage({ params }: { params: Promise<{ s
             </div>
           </CardContent>
         </Card>
+        
+        <Card className="xl:col-span-12 border-white/20 dark:border-slate-800/50 shadow-xl shadow-slate-200/50 dark:shadow-black/20 rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white relative overflow-hidden group">
+          <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-20 transition-opacity duration-500" />
+          <CardContent className="relative z-10 p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex-1 space-y-2 text-center sm:text-left">
+              <h2 className="text-2xl font-bold flex items-center justify-center sm:justify-start gap-2">
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-200 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
+                </span>
+                Love Zairo? Refer & Earn!
+              </h2>
+              <p className="text-emerald-50 max-w-2xl text-sm sm:text-base">
+                Know another restaurant owner who needs a digital presence? Share Zairo with them and earn <b>₹100 instantly + ₹20 every month</b> they renew. Turn your network into recurring income!
+              </p>
+            </div>
+            <Link href="/partner" className="shrink-0 bg-white text-emerald-600 hover:bg-emerald-50 font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1">
+              Join Partner Program &rarr;
+            </Link>
+          </CardContent>
+        </Card>
 
         <Card className="xl:col-span-12 border-white/20 dark:border-slate-800/50 shadow-xl shadow-slate-200/50 dark:shadow-black/20 rounded-3xl bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

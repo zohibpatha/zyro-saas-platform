@@ -38,6 +38,13 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
           </div>
           
           <div className="hidden sm:flex sm:items-center sm:gap-4">
+            <Link href="/partner" className="text-sm font-medium text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 bg-emerald-50 dark:bg-emerald-950/30 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800 transition-colors flex items-center gap-1.5">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              Earn ₹100/Sale
+            </Link>
             <Link href="/trial">
               <Button size="sm" className="h-9 px-5 bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 rounded-full font-medium transition-all shadow-md shadow-black/10">Start 7-Day Free Trial</Button>
             </Link>
@@ -56,6 +63,13 @@ export default function Navbar({ user, isAdmin }: { user?: { email: string } | n
           <div className="space-y-2">
             <Link href="/pricing" className="flex items-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
               Pricing
+            </Link>
+            <Link href="/partner" className="flex items-center gap-2 px-4 py-3 rounded-xl text-base font-medium text-emerald-600 bg-emerald-50 hover:bg-emerald-100">
+              <span className="relative flex h-2 w-2 mr-1">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              Earn ₹100/Sale (Partner Program)
             </Link>
             <Link href="/trial" className="block px-4 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
               Start 7-Day Free Trial

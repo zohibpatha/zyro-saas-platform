@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import Navbar from '@/components/navbar'
 import CheckoutClient from './CheckoutClient'
 import { createClient } from '@/lib/supabase/server'
@@ -29,7 +30,9 @@ export default async function CheckoutPage() {
           </p>
         </div>
 
-        <CheckoutClient />
+        <Suspense fallback={<div className="h-96 w-full animate-pulse bg-slate-100 rounded-3xl" />}>
+          <CheckoutClient />
+        </Suspense>
       </main>
     </div>
   )

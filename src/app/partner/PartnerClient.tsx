@@ -63,14 +63,18 @@ export default function PartnerClient({ initialProfile, ledger, userEmail }: Par
     setIsLoading(false)
   }
 
+  const getReferralLink = () => {
+    return `${window.location.origin}/pricing?ref=${profile.saarthi_code}`
+  }
+
   const copyCode = () => {
-    navigator.clipboard.writeText(profile.saarthi_code)
+    navigator.clipboard.writeText(getReferralLink())
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
 
   const shareOnWhatsApp = () => {
-    const text = `Hey! I'm partnering with Zairo. Use my VIP code *${profile.saarthi_code}* when you sign up your restaurant to get a special offer! Sign up here: ${window.location.origin}/pricing`
+    const text = `Hey! I'm partnering with Zairo. Get your restaurant's digital presence up and running today! Use my VIP link to sign up and get started: ${getReferralLink()}`
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
   }
 
@@ -174,11 +178,12 @@ export default function PartnerClient({ initialProfile, ledger, userEmail }: Par
           
           {/* Code Card */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col items-center justify-center text-center">
-            <p className="text-sm font-medium text-slate-500 mb-2">Your VIP Partner Code</p>
-            <div className="bg-slate-100 rounded-xl px-6 py-4 mb-4 flex items-center gap-3">
-              <span className="text-3xl font-black text-slate-900 font-mono tracking-wider">{profile.saarthi_code}</span>
+            <p className="text-sm font-medium text-slate-500 mb-2">Your Magic Referral Link</p>
+            <div className="bg-slate-100 rounded-xl px-6 py-4 mb-4 flex items-center gap-3 w-full justify-center">
+              <span className="text-xl font-bold text-slate-900 font-mono tracking-wider truncate">...{profile.saarthi_code}</span>
               <button 
                 onClick={copyCode}
+                title="Copy Link"
                 className="p-2 hover:bg-white rounded-lg transition-colors text-slate-500 hover:text-slate-900"
               >
                 {copied ? <CheckCircle2 className="w-6 h-6 text-emerald-500" /> : <Copy className="w-6 h-6" />}

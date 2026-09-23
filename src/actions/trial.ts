@@ -10,6 +10,7 @@ export async function startFreeTrial(formData: FormData) {
   const rawSlug = formData.get('slug') as string
   const phone = formData.get('phone') as string
   const googleMapsUrl = formData.get('google_maps_url') as string
+  const saarthiCode = formData.get('saarthi_code') as string || null
   
   if (!name || !rawSlug || !phone || !googleMapsUrl) {
     return { error: 'All fields are required' }
@@ -50,7 +51,8 @@ export async function startFreeTrial(formData: FormData) {
       owner_email: ownerEmail,
       plan_tier: 'Pro',
       is_active: true,
-      trial_expires_at: trialExpiresAt.toISOString()
+      trial_expires_at: trialExpiresAt.toISOString(),
+      referred_by_code: saarthiCode ? saarthiCode.toUpperCase().trim() : null
     })
     .select()
     .single()

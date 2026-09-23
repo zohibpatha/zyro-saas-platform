@@ -62,9 +62,11 @@ const faqs = [
   }
 ]
 
-export default async function PricingPage() {
+export default async function PricingPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+  const { ref } = await searchParams
+  const refQuery = ref ? (typeof ref === 'string' ? ref : ref[0]) : null
 
   let isAdmin = false
   if (user) {
@@ -75,6 +77,15 @@ export default async function PricingPage() {
       .maybeSingle()
     if (admin) isAdmin = true
   }
+
+  // Update hrefs dynamically with referral code
+  const tiersWithRef = tiers.map(tier => {
+    let href = tier.href
+    if (refQuery) {
+      href += href.includes('?') ? `&ref=${refQuery}` : `?ref=${refQuery}`
+    }
+    return { ...tier, href }
+  })
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col font-sans selection:bg-indigo-500/30">
@@ -94,7 +105,7 @@ export default async function PricingPage() {
 
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto w-full items-center mb-24">
-          {tiers.map((tier) => (
+          {tiersWithRef.map((tier) => (
             <div 
               key={tier.id}
               className={`relative bg-white dark:bg-slate-900 border rounded-3xl p-8 shadow-sm flex flex-col h-full transition-transform ${

@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import Navbar from '@/components/navbar'
 import TrialClient from './TrialClient'
 
@@ -23,7 +24,9 @@ export default function TrialPage() {
           </p>
         </div>
 
-        <TrialClient />
+        <Suspense fallback={<div className="h-96 w-full animate-pulse bg-slate-100 rounded-3xl" />}>
+          <TrialClient />
+        </Suspense>
       </main>
     </div>
   )

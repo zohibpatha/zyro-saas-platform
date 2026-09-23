@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Upload, Loader2, IndianRupee, ShieldCheck } from 'lucide-react'
+import { Upload, Loader2, IndianRupee, ShieldCheck, CheckCircle2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 export default function CheckoutClient() {
@@ -30,7 +30,7 @@ export default function CheckoutClient() {
   }
   
   const [phoneNumber, setPhoneNumber] = useState('')
-  const [saarthiCode, setSaarthiCode] = useState('')
+  const [saarthiCode, setSaarthiCode] = useState(searchParams.get('ref') || '')
   const [file, setFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [isVerifying, setIsVerifying] = useState(false)
@@ -199,13 +199,21 @@ export default function CheckoutClient() {
           
           <div className="space-y-2">
             <label className="text-sm font-bold text-slate-700 dark:text-slate-300">VIP/Partner Code (Optional)</label>
-            <input 
-              type="text" 
-              value={saarthiCode}
-              onChange={(e) => setSaarthiCode(e.target.value)}
-              placeholder="e.g. VIP50"
-              className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all"
-            />
+            <div className="relative">
+              <input 
+                type="text" 
+                value={saarthiCode}
+                onChange={(e) => setSaarthiCode(e.target.value)}
+                placeholder="e.g. VIP50"
+                className={`w-full border rounded-xl px-4 py-3 text-slate-900 dark:text-white focus:ring-2 outline-none transition-all ${searchParams.get('ref') ? 'bg-indigo-50/50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-800 focus:ring-indigo-500 font-medium' : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus:ring-indigo-500'}`}
+              />
+              {searchParams.get('ref') && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/50 px-2 py-1 rounded-md">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  APPLIED
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="space-y-2">

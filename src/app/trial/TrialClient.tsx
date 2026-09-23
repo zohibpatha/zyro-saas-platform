@@ -1,12 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Sparkles, Loader2, MapPin, Phone, Building2, Link as LinkIcon, ShieldCheck } from 'lucide-react'
 import { startFreeTrial } from '@/actions/trial'
 
 export default function TrialClient() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const saarthiCode = searchParams.get('ref') || ''
+  
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [name, setName] = useState('')
@@ -55,6 +58,7 @@ export default function TrialClient() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {saarthiCode && <input type="hidden" name="saarthi_code" value={saarthiCode} />}
           <div className="space-y-2">
             <label className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
               <Building2 className="w-4 h-4 text-slate-400" /> Business Name
