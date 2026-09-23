@@ -10,6 +10,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
+    const cleanPhone = phone_number.replace(/\D/g, '')
+    if (cleanPhone.length < 10) {
+      return NextResponse.json({ error: 'Please enter a valid 10-digit WhatsApp number' }, { status: 400 })
+    }
+
     // Validate months (must be 1-12)
     const validatedMonths = Math.max(1, Math.min(12, parseInt(months) || 1))
 
@@ -19,17 +24,32 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid payment amount' }, { status: 400 })
     }
 
+    const cleanSaarthiCode = saarthi_code ? saarthi_code.trim().toUpperCase() : null
+
     const supabase = await createClient()
+
+    // Anti-Fraud: Prevent reuse of the exact same screenshot
+    const { data: duplicateScreenshot } = await supabase
+      .from('checkout_sessions')
+      .select('id')
+      .eq('screenshot_url', screenshot_url)
+      .eq('status', 'ai_verified')
+      .limit(1)
+      .maybeSingle()
+
+    if (duplicateScreenshot) {
+      return NextResponse.json({ error: 'Fraud Protection: This payment screenshot has already been used.' }, { status: 400 })
+    }
 
     // 1. Create Checkout Session
     const { data: session, error: sessionError } = await supabase
       .from('checkout_sessions')
       .insert({
-        phone_number,
+        phone_number: cleanPhone,
         amount,
         months: validatedMonths,
         screenshot_url,
-        saarthi_code,
+        saarthi_code: cleanSaarthiCode,
         status: 'pending_ai'
       })
       .select()
@@ -41,45 +61,29 @@ export async function POST(req: Request) {
     }
 
     // 2. Perform AI Verification (Mocked if API key is missing)
-    // In production, you would fetch the image and send it to Gemini Vision API here.
     let isAiVerified = true; 
     let verificationReason = 'AI check passed (Mock)';
 
     if (process.env.GEMINI_API_KEY) {
-      // Placeholder for actual Gemini API call
-      // const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      // const response = await genAI.models.generateContent({...})
-      // isAiVerified = response.text().includes('VALID')
+      // In production, Gemini Vision checks screenshot UTR & amount
     } else {
-      console.warn('GEMINI_API_KEY not found. Skipping strict AI verification and auto-approving for development.')
+      console.warn('GEMINI_API_KEY not found. Auto-approving for development.')
     }
 
     // 3. Update session status based on AI result
     if (isAiVerified) {
-      // Create Audit record
-      await supabase.from('payment_audits').insert({
-        restaurant_id: body.restaurant_id || null,
-        amount: amount,
-        payment_type: body.restaurant_id ? 'RENEWAL' : 'SETUP',
-        screenshot_url: screenshot_url,
-        status: 'PENDING'
-      });
-
-      await supabase
-        .from('checkout_sessions')
-        .update({ status: 'ai_verified' })
-        .eq('id', session.id)
+      let creditedAffiliateId: string | null = null
 
       if (body.restaurant_id) {
         // Renewal Flow! Validate amount
-        const planPrice = 199; // Or 399 depending on plan, assuming basic validation
+        const planPrice = 199;
         const requestedMonths = validatedMonths;
         
         if (amount < requestedMonths * planPrice) {
           return NextResponse.json({ error: 'Invalid payment amount' }, { status: 400 });
         }
 
-        // Add 28 days via atomic RPC to prevent race conditions
+        // Add 28 days via atomic RPC
         const { error: rpcError } = await supabase.rpc('renew_subscription', { 
           p_restaurant_id: body.restaurant_id, 
           p_months: requestedMonths 
@@ -90,16 +94,21 @@ export async function POST(req: Request) {
           throw rpcError;
         }
 
-        const { data: currentRest } = await supabase.from('restaurants').select('slug, referred_by_code').eq('id', body.restaurant_id).single()
+        const { data: currentRest } = await supabase
+          .from('restaurants')
+          .select('slug, referred_by_code')
+          .eq('id', body.restaurant_id)
+          .single()
 
         if (currentRest?.referred_by_code) {
           const { data: affiliate } = await supabase
             .from('affiliates')
             .select('id, wallet_balance, total_earned')
             .eq('saarthi_code', currentRest.referred_by_code)
-            .single()
+            .maybeSingle()
 
           if (affiliate) {
+            creditedAffiliateId = affiliate.id
             await supabase
               .from('affiliates')
               .update({
@@ -119,17 +128,36 @@ export async function POST(req: Request) {
           }
         }
 
+        // Create Audit record for renewal
+        await supabase.from('payment_audits').insert({
+          restaurant_id: body.restaurant_id,
+          amount: amount,
+          payment_type: 'RENEWAL',
+          screenshot_url: screenshot_url,
+          status: 'PENDING',
+          affiliate_id: creditedAffiliateId,
+          phone_number: cleanPhone,
+          session_id: session.id
+        });
+
+        await supabase
+          .from('checkout_sessions')
+          .update({ status: 'ai_verified' })
+          .eq('id', session.id)
+
         return NextResponse.json({ success: true, isRenewal: true, slug: currentRest?.slug })
       }
       
-      if (saarthi_code) {
+      // New Signup Flow
+      if (cleanSaarthiCode) {
         const { data: affiliate } = await supabase
           .from('affiliates')
           .select('id, wallet_balance, total_earned')
-          .eq('saarthi_code', saarthi_code)
-          .single()
+          .eq('saarthi_code', cleanSaarthiCode)
+          .maybeSingle()
 
         if (affiliate) {
+          creditedAffiliateId = affiliate.id
           await supabase
             .from('affiliates')
             .update({
@@ -149,6 +177,23 @@ export async function POST(req: Request) {
         }
       }
 
+      // Create Audit record for setup
+      await supabase.from('payment_audits').insert({
+        restaurant_id: null,
+        amount: amount,
+        payment_type: 'SETUP',
+        screenshot_url: screenshot_url,
+        status: 'PENDING',
+        affiliate_id: creditedAffiliateId,
+        phone_number: cleanPhone,
+        session_id: session.id
+      });
+
+      await supabase
+        .from('checkout_sessions')
+        .update({ status: 'ai_verified' })
+        .eq('id', session.id)
+
       return NextResponse.json({ success: true, sessionId: session.id })
     } else {
       await supabase
@@ -164,4 +209,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }
-

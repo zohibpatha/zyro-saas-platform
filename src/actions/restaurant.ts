@@ -236,10 +236,55 @@ export async function rejectPaymentAudit(auditId: string, restaurantId: string |
   const { admin } = await verifyAdmin()
   if (!admin) return { error: 'Admin access required' }
   const supabase = await createClient()
+
+  // 1. Fetch audit details before updating
+  const { data: audit } = await supabase
+    .from('payment_audits')
+    .select('*, restaurants(id)')
+    .eq('id', auditId)
+    .single()
+
   await supabase.from('payment_audits').update({ status: 'REJECTED' }).eq('id', auditId)
-  if (restaurantId) {
-    await supabase.from('restaurants').update({ is_active: false }).eq('id', restaurantId)
+
+  // 2. Deactivate restaurant
+  const targetRestId = restaurantId || audit?.restaurant_id || audit?.restaurants?.id
+  if (targetRestId) {
+    await supabase.from('restaurants').update({ is_active: false }).eq('id', targetRestId)
+  } else if (audit?.phone_number) {
+    // If restaurant wasn't linked yet, find by phone
+    await supabase.from('restaurants').update({ is_active: false }).eq('phone', audit.phone_number)
   }
+
+  // 3. Reverse Affiliate Commission if one was awarded
+  if (audit?.affiliate_id) {
+    const commissionToDeduct = audit.payment_type === 'RENEWAL' ? 20 : 100
+    const { data: affiliate } = await supabase
+      .from('affiliates')
+      .select('id, wallet_balance, total_earned')
+      .eq('id', audit.affiliate_id)
+      .single()
+
+    if (affiliate) {
+      await supabase
+        .from('affiliates')
+        .update({
+          wallet_balance: Math.max(0, (affiliate.wallet_balance || 0) - commissionToDeduct),
+          total_earned: Math.max(0, (affiliate.total_earned || 0) - commissionToDeduct)
+        })
+        .eq('id', affiliate.id)
+
+      await supabase
+        .from('affiliate_ledger')
+        .insert({
+          affiliate_id: affiliate.id,
+          amount: -commissionToDeduct,
+          type: 'commission_reversal',
+          description: `Payment rejected by admin for Audit #${auditId.substring(0, 8)}`,
+          status: 'completed'
+        })
+    }
+  }
+
   revalidatePath('/zairo-super-admin-786')
   return { success: true }
 }

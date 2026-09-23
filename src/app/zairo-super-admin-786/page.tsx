@@ -107,9 +107,9 @@ export default async function AdminDashboard() {
             {audits.map((a: any) => (
               <div key={a.id} className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-2">
                 <img src={a.screenshot_url} alt="Payment Screenshot" className="w-full h-48 object-cover rounded-lg border border-gray-100" />
-                <div className="font-medium text-gray-900 mt-2">{a.restaurants?.name || 'New Setup (No Restaurant Yet)'}</div>
+                <div className="font-medium text-gray-900 mt-2">{a.restaurants?.name || (a.phone_number ? `New Setup (${a.phone_number})` : 'New Setup')}</div>
                 <div className="text-sm text-gray-500 font-mono">Type: {a.payment_type}</div>
-                <div className="text-lg font-bold text-gray-900">?{a.amount}</div>
+                <div className="text-lg font-bold text-gray-900">₹{a.amount}</div>
                 <div className="grid grid-cols-2 gap-2 mt-2">
                   <form action={async () => {
                     "use server";

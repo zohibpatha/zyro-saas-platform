@@ -259,7 +259,7 @@ export default async function ClientManagePage({ params }: { params: Promise<{ s
                           return (
                             <tr key={customer.id} className="border-b border-slate-100 dark:border-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                               <td className="py-3 px-4 font-medium text-slate-900 dark:text-white">
-                                +{customer.phone}
+                                +{customer.phone.length >= 10 ? `${customer.phone.slice(0, 4)}••••${customer.phone.slice(-3)}` : customer.phone}
                                 {isDormant && (
                                   <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400">
                                     Missing ({daysSinceVisit}d)

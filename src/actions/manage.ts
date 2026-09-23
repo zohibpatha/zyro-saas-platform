@@ -26,7 +26,7 @@ export async function updateRestaurantBySlug(slug: string, formData: FormData) {
     p_primary_color: (formData.get('primary_color') as string) || '#111111',
     p_loyalty_offer: formData.get('loyalty_offer') as string || null,
     p_reward_stamps: parseInt(formData.get('reward_stamps') as string || '5', 10),
-    p_plan_tier: formData.get('plan_tier') as string || 'Pro',
+    p_plan_tier: null,
     p_menu_url: formData.get('menu_url') as string || null
   })
 

@@ -2,7 +2,6 @@
 
 import { createClient } from '@/lib/supabase/server'
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 
 export async function submitOnboarding(formData: FormData, sessionId: string) {
   if (!sessionId) return { error: 'Invalid session' }
@@ -22,13 +21,17 @@ export async function submitOnboarding(formData: FormData, sessionId: string) {
   if (session.status !== 'ai_verified') return { error: 'Payment not yet verified. Please wait.' }
 
   const name = formData.get('name') as string
-  const slug = formData.get('slug') as string
+  const rawSlug = formData.get('slug') as string
 
-  if (!name || !slug) return { error: 'Name and URL are required' }
+  if (!name || !rawSlug) return { error: 'Name and URL are required' }
 
-  // 2. Create Restaurant with Subscription Details
+  // Sanitize slug
+  const slug = rawSlug.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')
+  if (slug.length < 3) return { error: 'URL slug must be at least 3 characters' }
+
+  // 2. Create Restaurant with Subscription Details & Referral Tracking
   const subscriptionEndDate = new Date()
-  subscriptionEndDate.setDate(subscriptionEndDate.getDate() + (session.months * 28)) // 28 days per month as requested
+  subscriptionEndDate.setDate(subscriptionEndDate.getDate() + (session.months * 28)) // 28 days per month
 
   const planTier = session.amount === 199 ? 'Basic' : 'Pro'
 
@@ -42,16 +45,17 @@ export async function submitOnboarding(formData: FormData, sessionId: string) {
       primary_color: formData.get('primary_color') as string || '#111111',
       phone: session.phone_number,
       whatsapp: session.phone_number,
-      owner_email: `${session.phone_number}@zairo.local`, // Dummy email since they don't sign up
+      owner_email: `${session.phone_number}@zairo.local`,
       plan_tier: planTier,
-      is_active: true, // Auto active based on trust
-      subscription_end_date: subscriptionEndDate.toISOString()
+      is_active: true,
+      subscription_end_date: subscriptionEndDate.toISOString(),
+      referred_by_code: session.saarthi_code || null
     })
     .select()
     .single()
 
   if (createError) {
-    if (createError.code === '23505') return { error: 'This URL is already taken' }
+    if (createError.code === '23505') return { error: 'This URL is already taken. Please choose another.' }
     return { error: createError.message }
   }
 
@@ -61,7 +65,13 @@ export async function submitOnboarding(formData: FormData, sessionId: string) {
     .update({ restaurant_id: restaurant.id })
     .eq('id', sessionId)
 
-  // 4. Set secure cookie for auto-login to dashboard
+  // 4. Link payment_audits to restaurant
+  await supabase
+    .from('payment_audits')
+    .update({ restaurant_id: restaurant.id })
+    .eq('session_id', sessionId)
+
+  // 5. Set secure cookie for auto-login to dashboard
   const cookieStore = await cookies()
   cookieStore.set('zairo_client_auth', session.phone_number, {
     httpOnly: true,
