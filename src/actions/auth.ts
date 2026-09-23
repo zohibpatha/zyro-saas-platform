@@ -80,10 +80,15 @@ export async function signOut() {
 
 export async function signInWithOAuth(provider: 'google' | 'github') {
   const supabase = await createClient()
+  
+  // Smart URL resolution for Vercel vs Local
+  let siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 
+    (process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : 'http://localhost:3000')
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+      redirectTo: `${siteUrl}/auth/callback`,
     },
   })
   if (data.url) {
