@@ -44,7 +44,7 @@ export default async function ClientManagePage({ params }: { params: Promise<{ s
           <p className="text-slate-600 dark:text-slate-400 mb-8 font-medium">
             {isTrialExpired 
               ? "Your 7-Day Free Trial has ended. To keep your Public QR Page active and retain your customer data, please pay the one-time Setup Fee." 
-              : "Your access to the Zyro platform has expired. Please renew your subscription to restore your public page and dashboard. All your data is safely backed up."}
+              : "Your access to the Zairo platform has expired. Please renew your subscription to restore your public page and dashboard. All your data is safely backed up."}
           </p>
           <Link
             href={`/checkout?plan=${restaurant.plan_tier === 'Basic' ? '199' : '399'}&restaurant_id=${restaurant.id}${isTrialExpired ? '&is_trial_conversion=true' : ''}`}

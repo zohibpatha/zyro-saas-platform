@@ -19,6 +19,7 @@ export async function submitOnboarding(formData: FormData, sessionId: string) {
   if (sessionError || !session) return { error: 'Session not found' }
   if (session.restaurant_id) return { error: 'Session already used' }
   if (session.status === 'rejected') return { error: 'Payment was rejected' }
+  if (session.status !== 'ai_verified') return { error: 'Payment not yet verified. Please wait.' }
 
   const name = formData.get('name') as string
   const slug = formData.get('slug') as string

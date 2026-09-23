@@ -10,6 +10,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
+    // Validate months (must be 1-12)
+    const validatedMonths = Math.max(1, Math.min(12, parseInt(months) || 1))
+
+    // Server-side amount validation
+    const validAmounts = [199, 399, 499, 699, 999, 1499]
+    if (!validAmounts.includes(Number(amount))) {
+      return NextResponse.json({ error: 'Invalid payment amount' }, { status: 400 })
+    }
+
     const supabase = await createClient()
 
     // 1. Create Checkout Session
@@ -18,7 +27,7 @@ export async function POST(req: Request) {
       .insert({
         phone_number,
         amount,
-        months: months || 1,
+        months: validatedMonths,
         screenshot_url,
         saarthi_code,
         status: 'pending_ai'
@@ -64,7 +73,7 @@ export async function POST(req: Request) {
       if (body.restaurant_id) {
         // Renewal Flow! Validate amount
         const planPrice = 199; // Or 399 depending on plan, assuming basic validation
-        const requestedMonths = months || 1;
+        const requestedMonths = validatedMonths;
         
         if (amount < requestedMonths * planPrice) {
           return NextResponse.json({ error: 'Invalid payment amount' }, { status: 400 });

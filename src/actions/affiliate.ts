@@ -105,6 +105,20 @@ export async function requestWithdrawal() {
     return { error: 'Minimum withdrawal is ₹500' }
   }
 
+  // Check for existing pending withdrawal to prevent double-click race condition
+  const { data: existingPending } = await supabase
+    .from('affiliate_ledger')
+    .select('id')
+    .eq('affiliate_id', user.id)
+    .eq('type', 'withdrawal')
+    .eq('status', 'pending')
+    .limit(1)
+    .maybeSingle()
+
+  if (existingPending) {
+    return { error: 'You already have a pending withdrawal. Please wait for it to be processed.' }
+  }
+
   const amount = profile.wallet_balance
 
   // Create withdrawal request
@@ -139,7 +153,17 @@ export async function requestWithdrawal() {
 // Super Admin Functions
 export async function getAllPendingWithdrawals() {
   const supabase = await createClient()
-  
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user?.email) return { data: [] }
+
+  const { data: admin } = await supabase
+    .from('admin_users')
+    .select('email')
+    .eq('email', user.email)
+    .maybeSingle()
+
+  if (!admin) return { data: [] }
+
   const { data, error } = await supabase
     .from('affiliate_ledger')
     .select(`
@@ -164,6 +188,16 @@ export async function getAllPendingWithdrawals() {
 
 export async function markWithdrawalPaid(ledgerId: string) {
   const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user?.email) return { error: 'Unauthorized' }
+
+  const { data: admin } = await supabase
+    .from('admin_users')
+    .select('email')
+    .eq('email', user.email)
+    .maybeSingle()
+
+  if (!admin) return { error: 'Admin access required' }
 
   const { error } = await supabase
     .from('affiliate_ledger')

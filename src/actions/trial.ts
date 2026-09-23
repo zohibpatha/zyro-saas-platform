@@ -7,12 +7,18 @@ export async function startFreeTrial(formData: FormData) {
   const supabase = await createClient()
   
   const name = formData.get('name') as string
-  const slug = formData.get('slug') as string
+  const rawSlug = formData.get('slug') as string
   const phone = formData.get('phone') as string
   const googleMapsUrl = formData.get('google_maps_url') as string
   
-  if (!name || !slug || !phone || !googleMapsUrl) {
+  if (!name || !rawSlug || !phone || !googleMapsUrl) {
     return { error: 'All fields are required' }
+  }
+
+  // Sanitize slug: lowercase, no special chars, hyphens for spaces
+  const slug = rawSlug.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')
+  if (slug.length < 3) {
+    return { error: 'URL slug must be at least 3 characters' }
   }
 
   // ANTI-ABUSE CHECK
