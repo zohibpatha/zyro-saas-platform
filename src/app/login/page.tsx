@@ -5,11 +5,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { signInWithPassword, signInWithOAuth } from '@/actions/auth'
+import { signInWithPassword, signUp, signInWithOAuth } from '@/actions/auth'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
 export default function LoginPage() {
+  const [isSignUp, setIsSignUp] = useState(false)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -24,12 +25,21 @@ export default function LoginPage() {
     setError(null)
     setSuccess(false)
     
-    const res = await signInWithPassword(formData)
+    let res;
+    if (isSignUp) {
+      res = await signUp(formData)
+    } else {
+      res = await signInWithPassword(formData)
+    }
     
     if (res?.error) {
       setError(res.error)
     } else {
       setSuccess(true)
+      if (isSignUp) {
+        // Switch to sign in mode after successful sign up
+        setIsSignUp(false)
+      }
     }
     
     setLoading(false)
@@ -102,8 +112,13 @@ export default function LoginPage() {
                   <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   Authenticating...
                 </div>
-              ) : 'Sign In'}
+              ) : (isSignUp ? 'Create Account' : 'Sign In')}
             </Button>
+            {success && isSignUp && (
+              <div className="p-4 bg-emerald-50 text-emerald-700 rounded-xl text-sm border border-emerald-200 text-center font-medium">
+                Success! Please check your email to verify your account (if enabled in Supabase), or sign in now.
+              </div>
+            )}
           </form>
         </CardContent>
         <CardFooter className="px-8 pb-8 flex flex-col items-center justify-center space-y-4">
@@ -128,7 +143,11 @@ export default function LoginPage() {
             </Button>
           </div>
           <p className="text-center text-sm text-slate-500 mt-6">
-            Don't have an account? <Link href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">Sign up</Link>
+            {isSignUp ? (
+              <>Already have an account? <button type="button" onClick={() => setIsSignUp(false)} className="font-semibold text-indigo-600 hover:text-indigo-500">Sign in</button></>
+            ) : (
+              <>Don't have an account? <button type="button" onClick={() => setIsSignUp(true)} className="font-semibold text-indigo-600 hover:text-indigo-500">Sign up</button></>
+            )}
           </p>
         </CardFooter>
       </Card>
