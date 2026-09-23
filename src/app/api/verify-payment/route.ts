@@ -73,15 +73,18 @@ export async function POST(req: Request) {
     // 3. Update session status based on AI result
     if (isAiVerified) {
       let creditedAffiliateId: string | null = null
+      const numAmount = Number(amount);
+      const requestedMonths = validatedMonths;
 
       if (body.restaurant_id) {
-        // Renewal Flow! Validate amount
-        const planPrice = 199;
-        const requestedMonths = validatedMonths;
+        // Renewal Flow
+        const pricePerMonth = numAmount / requestedMonths;
         
-        if (amount < requestedMonths * planPrice) {
-          return NextResponse.json({ error: 'Invalid payment amount' }, { status: 400 });
-        }
+        let renewalCommPerMonth = 20; // default for 399
+        if (pricePerMonth <= 199) renewalCommPerMonth = 10;
+        else if (pricePerMonth >= 699) renewalCommPerMonth = 30;
+        
+        const totalRenewalComm = renewalCommPerMonth * requestedMonths;
 
         // Add 28 days via atomic RPC
         const { error: rpcError } = await supabase.rpc('renew_subscription', { 
@@ -112,8 +115,8 @@ export async function POST(req: Request) {
             await supabase
               .from('affiliates')
               .update({
-                wallet_balance: (affiliate.wallet_balance || 0) + 100,
-                total_earned: (affiliate.total_earned || 0) + 100
+                wallet_balance: (affiliate.wallet_balance || 0) + totalRenewalComm,
+                total_earned: (affiliate.total_earned || 0) + totalRenewalComm
               })
               .eq('id', affiliate.id)
 
@@ -121,7 +124,7 @@ export async function POST(req: Request) {
               .from('affiliate_ledger')
               .insert({
                 affiliate_id: affiliate.id,
-                amount: 100,
+                amount: totalRenewalComm,
                 type: 'renewal_commission',
                 status: 'completed'
               })
@@ -150,6 +153,11 @@ export async function POST(req: Request) {
       
       // New Signup Flow
       if (cleanSaarthiCode) {
+        
+        let signupComm = 100; // default for 999
+        if (numAmount <= 499) signupComm = 50;
+        else if (numAmount >= 1499 || numAmount === 699) signupComm = 150;
+        
         const { data: affiliate } = await supabase
           .from('affiliates')
           .select('id, wallet_balance, total_earned')
@@ -161,8 +169,8 @@ export async function POST(req: Request) {
           await supabase
             .from('affiliates')
             .update({
-              wallet_balance: (affiliate.wallet_balance || 0) + 100,
-              total_earned: (affiliate.total_earned || 0) + 100
+              wallet_balance: (affiliate.wallet_balance || 0) + signupComm,
+              total_earned: (affiliate.total_earned || 0) + signupComm
             })
             .eq('id', affiliate.id)
 
@@ -170,7 +178,7 @@ export async function POST(req: Request) {
             .from('affiliate_ledger')
             .insert({
               affiliate_id: affiliate.id,
-              amount: 100,
+              amount: signupComm,
               type: 'signup_commission',
               status: 'completed'
             })

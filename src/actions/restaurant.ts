@@ -259,7 +259,17 @@ export async function rejectPaymentAudit(auditId: string, restaurantId: string |
 
   // 3. Reverse Affiliate Commission if one was awarded
   if (audit?.affiliate_id) {
-    const commissionToDeduct = audit.payment_type === 'RENEWAL' ? 100 : 100
+    const { data: lastLedger } = await supabase
+      .from('affiliate_ledger')
+      .select('amount')
+      .eq('affiliate_id', audit.affiliate_id)
+      .in('type', ['signup_commission', 'renewal_commission'])
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    const commissionToDeduct = lastLedger?.amount || 100
+
     const { data: affiliate } = await supabase
       .from('affiliates')
       .select('id, wallet_balance, total_earned')
