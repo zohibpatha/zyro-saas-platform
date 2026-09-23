@@ -172,6 +172,6 @@ export async function markWithdrawalPaid(ledgerId: string) {
 
   if (error) return { error: error.message }
   
-  revalidatePath('/zyro-super-admin-786')
+  revalidatePath('/zairo-super-admin-786')
   return { success: true }
 }

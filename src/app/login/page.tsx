@@ -53,7 +53,7 @@ export default function LoginPage() {
             <span className="text-2xl font-bold text-white">Z</span>
           </div>
           <CardTitle className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300">
-            Welcome to Zyro
+            Welcome to Zairo
           </CardTitle>
           <CardDescription className="text-base text-slate-500 dark:text-slate-400 font-medium">
             Enter your credentials to access the ultimate workspace.

@@ -74,7 +74,7 @@ export async function createRestaurant(formData: FormData) {
 
   if (error) return { error: error.message }
 
-  revalidatePath('/zyro-super-admin-786')
+  revalidatePath('/zairo-super-admin-786')
   return { success: true }
 }
 
@@ -117,8 +117,8 @@ export async function updateRestaurant(id: string, formData: FormData) {
 
   if (error) return { error: error.message }
 
-  revalidatePath('/zyro-super-admin-786')
-  revalidatePath(`/zyro-super-admin-786/edit/${id}`)
+  revalidatePath('/zairo-super-admin-786')
+  revalidatePath(`/zairo-super-admin-786/edit/${id}`)
   return { success: true }
 }
 
@@ -142,7 +142,7 @@ export async function toggleRestaurant(id: string) {
 
   if (error) return { error: error.message }
 
-  revalidatePath('/zyro-super-admin-786')
+  revalidatePath('/zairo-super-admin-786')
   return { success: true }
 }
 
@@ -158,7 +158,7 @@ export async function deleteRestaurant(id: string) {
 
   if (error) return { error: error.message }
 
-  revalidatePath('/zyro-super-admin-786')
+  revalidatePath('/zairo-super-admin-786')
   return { success: true }
 }
 
@@ -203,7 +203,7 @@ export async function addFoodPhoto(restaurantId: string, imageUrl: string) {
 
   if (error) return { error: error.message }
 
-  revalidatePath(`/zyro-super-admin-786/edit/${restaurantId}`)
+  revalidatePath(`/zairo-super-admin-786/edit/${restaurantId}`)
   return { success: true, photo: data[0] }
 }
 
@@ -219,6 +219,6 @@ export async function deleteFoodPhoto(photoId: string, restaurantId: string) {
 
   if (error) return { error: error.message }
 
-  revalidatePath(`/zyro-super-admin-786/edit/${restaurantId}`)
+  revalidatePath(`/zairo-super-admin-786/edit/${restaurantId}`)
   return { success: true }
 }

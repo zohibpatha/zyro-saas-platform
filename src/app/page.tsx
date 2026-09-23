@@ -63,7 +63,7 @@ export default function LandingPage() {
       </main>
 
       <footer className="py-8 px-6 text-center text-gray-500 text-sm border-t">
-        <p>&copy; {new Date().getFullYear()} Zyro. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} Zairo. All rights reserved.</p>
       </footer>
     </div>
   )

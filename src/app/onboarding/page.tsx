@@ -18,7 +18,7 @@ export default async function OnboardingPage({ searchParams }: { searchParams: P
             Payment Successful 🎉
           </div>
           <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-4">
-            Welcome to Zyro
+            Welcome to Zairo
           </h1>
           <p className="text-slate-600 dark:text-slate-400">
             Let's get your business profile and QR code ready. It only takes 30 seconds.

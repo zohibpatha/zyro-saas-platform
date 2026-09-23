@@ -45,7 +45,7 @@ export default async function AdminDashboard() {
           <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Admin Dashboard</h1>
           <p className="text-sm text-gray-500 mt-1">Manage all businesses across the platform</p>
         </div>
-        <Link href="/zyro-super-admin-786/create">
+        <Link href="/zairo-super-admin-786/create">
           <Button className="bg-black text-white hover:bg-gray-800 shadow-sm h-9 px-4 rounded-md text-sm transition-all">
             <Plus className="w-4 h-4 mr-2" />
             New Business

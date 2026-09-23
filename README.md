@@ -1,4 +1,4 @@
-# Zyro — Restaurant Digital Presence Platform
+# Zairo — Restaurant Digital Presence Platform
 
 Multi-tenant SaaS platform that gives restaurants a permanent professional digital page with QR-driven Google Review funneling.
 
@@ -6,7 +6,7 @@ Multi-tenant SaaS platform that gives restaurants a permanent professional digit
 
 ## Overview
 
-**Zyro** provides restaurants with a high-converting, mobile-optimized digital presence. Each restaurant receives a dedicated public page reachable via a custom slug and branded QR code. The platform features an administrative portal for managing tenant accounts and a self-serve dashboard where restaurant owners can update business information, social and navigation links, brand colors, and showcase dish photo galleries.
+**Zairo** provides restaurants with a high-converting, mobile-optimized digital presence. Each restaurant receives a dedicated public page reachable via a custom slug and branded QR code. The platform features an administrative portal for managing tenant accounts and a self-serve dashboard where restaurant owners can update business information, social and navigation links, brand colors, and showcase dish photo galleries.
 
 ### Key Features
 
@@ -44,7 +44,7 @@ Multi-tenant SaaS platform that gives restaurants a permanent professional digit
 ### 1. Clone and Install
 
 ```bash
-cd zyro
+cd zairo
 npm install
 ```
 
@@ -127,7 +127,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## Project Structure
 
 ```text
-zyro/
+zairo/
 ├── public/                     # Static assets
 ├── src/
 │   ├── actions/                # Next.js Server Actions
@@ -184,7 +184,7 @@ zyro/
 |---|---|:---:|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase Project API URL | Yes | `https://xyzcompany.supabase.co` |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase Public Anonymous API Key | Yes | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` |
-| `NEXT_PUBLIC_SITE_URL` | Base public URL of your application | Yes | `http://localhost:3000` or `https://zyro.app` |
+| `NEXT_PUBLIC_SITE_URL` | Base public URL of your application | Yes | `http://localhost:3000` or `https://zairo.app` |
 
 ---
 

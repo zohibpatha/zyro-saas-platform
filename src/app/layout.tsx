@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Zyro — Restaurant Digital Presence',
+  title: 'Zairo — Restaurant Digital Presence',
   description: 'Create a professional digital page for your restaurant. One QR code, all your links.',
   keywords: ['restaurant', 'qr code', 'google review', 'digital presence'],
 }

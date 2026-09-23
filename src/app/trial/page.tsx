@@ -2,7 +2,7 @@ import Navbar from '@/components/navbar'
 import TrialClient from './TrialClient'
 
 export const metadata = {
-  title: 'Start 7-Day Free Trial - Zyro',
+  title: 'Start 7-Day Free Trial - Zairo',
 }
 
 export default function TrialPage() {

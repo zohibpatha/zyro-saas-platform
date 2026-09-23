@@ -4,8 +4,8 @@ import { getAffiliateProfile, getAffiliateLedger } from '@/actions/affiliate'
 import PartnerClient from './PartnerClient'
 
 export const metadata = {
-  title: 'Zyro Partner Dashboard',
-  description: 'Manage your Zyro Saarthi affiliate account',
+  title: 'Zairo Partner Dashboard',
+  description: 'Manage your Zairo Saarthi affiliate account',
 }
 
 export default async function PartnerPage() {

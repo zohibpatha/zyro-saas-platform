@@ -39,7 +39,7 @@ export default function CheckoutClient() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const upiId = '7067615270@ybl' // Replace with your actual UPI ID
-  const payeeName = 'Zyro'
+  const payeeName = 'Zairo'
   const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(payeeName)}&am=${totalAmount}&cu=INR`
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

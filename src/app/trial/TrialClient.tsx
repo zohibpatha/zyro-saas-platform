@@ -72,10 +72,10 @@ export default function TrialClient() {
 
           <div className="space-y-2">
             <label className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
-              <LinkIcon className="w-4 h-4 text-slate-400" /> Your Zyro Link
+              <LinkIcon className="w-4 h-4 text-slate-400" /> Your Zairo Link
             </label>
             <div className="flex gap-2 items-center">
-              <span className="text-slate-400 text-sm font-mono truncate">zyro.in/r/</span>
+              <span className="text-slate-400 text-sm font-mono truncate">zairo.in/r/</span>
               <input 
                 type="text" 
                 name="slug"

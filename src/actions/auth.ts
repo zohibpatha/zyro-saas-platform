@@ -32,7 +32,7 @@ export async function signInWithPassword(formData: FormData) {
       .maybeSingle()
 
     if (adminUser) {
-      redirect('/zyro-super-admin-786')
+      redirect('/zairo-super-admin-786')
     }
 
     const { data: restaurant } = await supabase

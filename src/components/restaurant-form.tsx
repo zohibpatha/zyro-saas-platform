@@ -104,7 +104,7 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
           alert(result.error)
           return
         }
-        router.push('/zyro-super-admin-786')
+        router.push('/zairo-super-admin-786')
       }
     } catch (error) {
       console.error(error)

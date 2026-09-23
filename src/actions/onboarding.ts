@@ -41,7 +41,7 @@ export async function submitOnboarding(formData: FormData, sessionId: string) {
       primary_color: formData.get('primary_color') as string || '#111111',
       phone: session.phone_number,
       whatsapp: session.phone_number,
-      owner_email: `${session.phone_number}@zyro.local`, // Dummy email since they don't sign up
+      owner_email: `${session.phone_number}@zairo.local`, // Dummy email since they don't sign up
       plan_tier: planTier,
       is_active: true, // Auto active based on trust
       subscription_end_date: subscriptionEndDate.toISOString()
@@ -62,7 +62,7 @@ export async function submitOnboarding(formData: FormData, sessionId: string) {
 
   // 4. Set secure cookie for auto-login to dashboard
   const cookieStore = await cookies()
-  cookieStore.set('zyro_client_auth', session.phone_number, {
+  cookieStore.set('zairo_client_auth', session.phone_number, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',

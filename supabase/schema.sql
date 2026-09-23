@@ -1,5 +1,5 @@
 -- ============================================================================
--- Zyro — Full Database Schema
+-- Zairo — Full Database Schema
 -- Run this in the Supabase SQL Editor to set up your database.
 -- ============================================================================
 

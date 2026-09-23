@@ -84,7 +84,7 @@ export default function OnboardingClient({ sessionId }: { sessionId: string }) {
           <div className="space-y-2">
             <label className="text-sm font-bold text-slate-700 dark:text-slate-300">Your Link</label>
             <div className="flex gap-2 items-center">
-              <span className="text-slate-400 text-sm font-mono truncate">zyro.in/r/</span>
+              <span className="text-slate-400 text-sm font-mono truncate">zairo.in/r/</span>
               <input 
                 type="text" 
                 name="slug"

@@ -70,7 +70,7 @@ export default function PartnerClient({ initialProfile, ledger, userEmail }: Par
   }
 
   const shareOnWhatsApp = () => {
-    const text = `Hey! I'm partnering with Zyro. Use my VIP code *${profile.saarthi_code}* when you sign up your restaurant to get a special offer! Sign up here: ${window.location.origin}/pricing`
+    const text = `Hey! I'm partnering with Zairo. Use my VIP code *${profile.saarthi_code}* when you sign up your restaurant to get a special offer! Sign up here: ${window.location.origin}/pricing`
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank')
   }
 
@@ -79,7 +79,7 @@ export default function PartnerClient({ initialProfile, ledger, userEmail }: Par
       <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
           <div className="bg-slate-900 px-6 py-8 text-center">
-            <h2 className="text-2xl font-bold text-white">Become a Zyro Saarthi</h2>
+            <h2 className="text-2xl font-bold text-white">Become a Zairo Saarthi</h2>
             <p className="mt-2 text-slate-300 text-sm">Earn ₹100 for every restaurant you bring, and ₹20 every month they renew.</p>
           </div>
           
@@ -157,7 +157,7 @@ export default function PartnerClient({ initialProfile, ledger, userEmail }: Par
         <div className="max-w-4xl mx-auto flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold">Welcome back, {profile.name.split(' ')[0]}!</h1>
-            <p className="text-slate-400 mt-1">Zyro Saarthi Dashboard</p>
+            <p className="text-slate-400 mt-1">Zairo Saarthi Dashboard</p>
           </div>
           <div className="text-right">
             <p className="text-sm text-slate-400">Total Earned</p>

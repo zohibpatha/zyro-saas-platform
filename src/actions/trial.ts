@@ -30,7 +30,7 @@ export async function startFreeTrial(formData: FormData) {
   const trialExpiresAt = new Date()
   trialExpiresAt.setDate(trialExpiresAt.getDate() + 7)
   
-  const ownerEmail = `${phone}@zyrotrial.local`;
+  const ownerEmail = `${phone}@zairotrial.local`;
 
   const { data: restaurant, error: createError } = await supabase
     .from('restaurants')
