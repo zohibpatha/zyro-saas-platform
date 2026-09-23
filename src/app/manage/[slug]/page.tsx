@@ -28,7 +28,10 @@ export default async function ClientManagePage({ params }: { params: Promise<{ s
   const isTrialActive = restaurant.trial_expires_at && new Date(restaurant.trial_expires_at) >= new Date()
   const trialDaysLeft = restaurant.trial_expires_at ? Math.ceil((new Date(restaurant.trial_expires_at).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)) : 0
 
-  if (isExpired || isTrialExpired) {
+  const hasWarning = restaurant.payment_warning_until && new Date(restaurant.payment_warning_until) >= new Date()
+  const warningExpired = restaurant.payment_warning_until && new Date(restaurant.payment_warning_until) < new Date()
+
+  if (isExpired || isTrialExpired || warningExpired) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4">
         <div className="bg-white dark:bg-slate-900 p-8 rounded-3xl max-w-md w-full text-center shadow-2xl border-2 border-rose-200 dark:border-rose-900 relative overflow-hidden">
@@ -39,12 +42,14 @@ export default async function ClientManagePage({ params }: { params: Promise<{ s
             <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
           </div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-3">
-            {isTrialExpired ? 'Your Trial has Ended' : 'Subscription Expired'}
+            {warningExpired ? 'Payment Rejected' : (isTrialExpired ? 'Your Trial has Ended' : 'Subscription Expired')}
           </h1>
           <p className="text-slate-600 dark:text-slate-400 mb-8 font-medium">
-            {isTrialExpired 
-              ? "Your 7-Day Free Trial has ended. To keep your Public QR Page active and retain your customer data, please pay the one-time Setup Fee." 
-              : "Your access to the Zairo platform has expired. Please renew your subscription to restore your public page and dashboard. All your data is safely backed up."}
+            {warningExpired 
+              ? "Your payment screenshot was reviewed and rejected by our team (fake or invalid). Your access has been revoked. Please submit a valid payment to restore your account."
+              : (isTrialExpired 
+                ? "Your 7-Day Free Trial has ended. To keep your Public QR Page active and retain your customer data, please pay the one-time Setup Fee." 
+                : "Your access to the Zairo platform has expired. Please renew your subscription to restore your public page and dashboard. All your data is safely backed up.")}
           </p>
           <Link
             href={`/checkout?plan=${restaurant.plan_tier === 'Basic' ? '199' : '399'}&restaurant_id=${restaurant.id}${isTrialExpired ? '&is_trial_conversion=true' : ''}`}
@@ -81,6 +86,27 @@ export default async function ClientManagePage({ params }: { params: Promise<{ s
           </Link>
         </div>
       )}
+      
+      {hasWarning && (
+        <div className="bg-rose-100 border border-rose-300 rounded-2xl p-4 flex items-center justify-between shadow-sm animate-in slide-in-from-top">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-rose-500 rounded-full flex items-center justify-center text-white">
+              <MessageSquareWarning className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-rose-900">Payment Action Required</h3>
+              <p className="text-sm text-rose-700 font-medium">Your recent payment screenshot was invalid. Your access will be revoked soon. Please re-submit payment.</p>
+            </div>
+          </div>
+          <Link
+            href={`/checkout?plan=${restaurant.plan_tier === 'Basic' ? '199' : '399'}&restaurant_id=${restaurant.id}`}
+            className="bg-rose-600 hover:bg-rose-700 text-white px-5 py-2 rounded-xl font-bold text-sm shadow-md transition-all hover:-translate-y-0.5 whitespace-nowrap ml-4"
+          >
+            Fix Payment
+          </Link>
+        </div>
+      )}
+
       <div className="flex flex-col gap-2">
         <h1 className="text-4xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-3">
           Manage {restaurant.name} <Sparkles className="w-8 h-8 text-indigo-500" />

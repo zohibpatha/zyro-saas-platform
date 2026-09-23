@@ -112,8 +112,8 @@ export async function POST(req: Request) {
             await supabase
               .from('affiliates')
               .update({
-                wallet_balance: (affiliate.wallet_balance || 0) + 20,
-                total_earned: (affiliate.total_earned || 0) + 20
+                wallet_balance: (affiliate.wallet_balance || 0) + 100,
+                total_earned: (affiliate.total_earned || 0) + 100
               })
               .eq('id', affiliate.id)
 
@@ -121,7 +121,7 @@ export async function POST(req: Request) {
               .from('affiliate_ledger')
               .insert({
                 affiliate_id: affiliate.id,
-                amount: 20,
+                amount: 100,
                 type: 'renewal_commission',
                 status: 'completed'
               })

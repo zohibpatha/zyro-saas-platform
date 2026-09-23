@@ -246,18 +246,20 @@ export async function rejectPaymentAudit(auditId: string, restaurantId: string |
 
   await supabase.from('payment_audits').update({ status: 'REJECTED' }).eq('id', auditId)
 
-  // 2. Deactivate restaurant
+  // 2. Add 24-hour warning period instead of instant deactivation
   const targetRestId = restaurantId || audit?.restaurant_id || audit?.restaurants?.id
+  const warningDeadline = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours from now
+
   if (targetRestId) {
-    await supabase.from('restaurants').update({ is_active: false }).eq('id', targetRestId)
+    await supabase.from('restaurants').update({ payment_warning_until: warningDeadline }).eq('id', targetRestId)
   } else if (audit?.phone_number) {
     // If restaurant wasn't linked yet, find by phone
-    await supabase.from('restaurants').update({ is_active: false }).eq('phone', audit.phone_number)
+    await supabase.from('restaurants').update({ payment_warning_until: warningDeadline }).eq('phone', audit.phone_number)
   }
 
   // 3. Reverse Affiliate Commission if one was awarded
   if (audit?.affiliate_id) {
-    const commissionToDeduct = audit.payment_type === 'RENEWAL' ? 20 : 100
+    const commissionToDeduct = audit.payment_type === 'RENEWAL' ? 100 : 100
     const { data: affiliate } = await supabase
       .from('affiliates')
       .select('id, wallet_balance, total_earned')
