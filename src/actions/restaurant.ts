@@ -222,3 +222,25 @@ export async function deleteFoodPhoto(photoId: string, restaurantId: string) {
   revalidatePath(`/zairo-super-admin-786/edit/${restaurantId}`)
   return { success: true }
 }
+
+export async function approvePaymentAudit(auditId: string) {
+  const { admin } = await verifyAdmin()
+  if (!admin) return { error: 'Admin access required' }
+  const supabase = await createClient()
+  await supabase.from('payment_audits').update({ status: 'APPROVED' }).eq('id', auditId)
+  revalidatePath('/zairo-super-admin-786')
+  return { success: true }
+}
+
+export async function rejectPaymentAudit(auditId: string, restaurantId: string | null) {
+  const { admin } = await verifyAdmin()
+  if (!admin) return { error: 'Admin access required' }
+  const supabase = await createClient()
+  await supabase.from('payment_audits').update({ status: 'REJECTED' }).eq('id', auditId)
+  if (restaurantId) {
+    await supabase.from('restaurants').update({ is_active: false }).eq('id', restaurantId)
+  }
+  revalidatePath('/zairo-super-admin-786')
+  return { success: true }
+}
+

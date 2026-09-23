@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge'
 import AdminActions from './admin-actions'
 import { Plus } from 'lucide-react'
+import { approvePaymentAudit, rejectPaymentAudit } from '@/actions/restaurant'
 import { getAllPendingWithdrawals, markWithdrawalPaid } from '@/actions/affiliate'
 
 export const dynamic = 'force-dynamic'
@@ -37,6 +38,12 @@ export default async function AdminDashboard() {
   }
 
   const { data: withdrawals } = await getAllPendingWithdrawals()
+  
+  const { data: audits } = await supabase
+    .from('payment_audits')
+    .select('*, restaurants(name)')
+    .eq('status', 'PENDING')
+    .order('created_at', { ascending: false })
 
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8 animate-in fade-in duration-500">
@@ -94,6 +101,40 @@ export default async function AdminDashboard() {
       </div>
 
       <div className="pt-8 space-y-4">
+        <h2 className="text-xl font-semibold tracking-tight text-gray-900">Pending Payment Audits (Access Granted by AI)</h2>
+        {audits && audits.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {audits.map((a: any) => (
+              <div key={a.id} className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-2">
+                <img src={a.screenshot_url} alt="Payment Screenshot" className="w-full h-48 object-cover rounded-lg border border-gray-100" />
+                <div className="font-medium text-gray-900 mt-2">{a.restaurants?.name || 'New Setup (No Restaurant Yet)'}</div>
+                <div className="text-sm text-gray-500 font-mono">Type: {a.payment_type}</div>
+                <div className="text-lg font-bold text-gray-900">?{a.amount}</div>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <form action={async () => {
+                    "use server";
+                    await approvePaymentAudit(a.id);
+                  }}>
+                    <Button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white">Approve</Button>
+                  </form>
+                  <form action={async () => {
+                    "use server";
+                    await rejectPaymentAudit(a.id, a.restaurant_id);
+                  }}>
+                    <Button type="submit" variant="destructive" className="w-full">Reject (Revoke)</Button>
+                  </form>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-sm text-gray-500 py-4 bg-gray-50 rounded-lg text-center border border-gray-100">
+            No pending payments to audit.
+          </div>
+        )}
+      </div>
+
+      <div className="pt-8 space-y-4">
         <h2 className="text-xl font-semibold tracking-tight text-gray-900">Affiliate Withdrawals</h2>
         {withdrawals && withdrawals.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -122,3 +163,4 @@ export default async function AdminDashboard() {
     </div>
   )
 }
+

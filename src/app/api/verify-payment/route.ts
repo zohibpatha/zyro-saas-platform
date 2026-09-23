@@ -47,6 +47,15 @@ export async function POST(req: Request) {
 
     // 3. Update session status based on AI result
     if (isAiVerified) {
+      // Create Audit record
+      await supabase.from('payment_audits').insert({
+        restaurant_id: body.restaurant_id || null,
+        amount: amount,
+        payment_type: body.restaurant_id ? 'RENEWAL' : 'SETUP',
+        screenshot_url: screenshot_url,
+        status: 'PENDING'
+      });
+
       await supabase
         .from('checkout_sessions')
         .update({ status: 'ai_verified' })
@@ -146,3 +155,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }
+
