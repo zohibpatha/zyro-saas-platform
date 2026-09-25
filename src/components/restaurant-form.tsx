@@ -12,7 +12,7 @@ import { updateRestaurantBySlug } from '@/actions/manage'
 import ImageUpload from '@/components/image-upload'
 import type { Restaurant } from '@/lib/types'
 import { useRouter } from 'next/navigation'
-import { Sparkles, Globe, MapPin, Phone, Instagram, Palette, Star } from 'lucide-react'
+import { Sparkles, Globe, MapPin, Phone, Instagram, Palette, Star, Gift } from 'lucide-react'
 
 const restaurantSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -31,6 +31,9 @@ const restaurantSchema = z.object({
   reward_stamps: z.coerce.number().min(1).max(100).default(5),
   plan_tier: z.string().default('Pro'),
   menu_url: z.string().optional().or(z.literal('')),
+  post_review_message: z.string().optional().or(z.literal('')),
+  direct_action_url: z.string().optional().or(z.literal('')),
+  direct_action_button_text: z.string().optional().or(z.literal('')),
 })
 
 type FormValues = z.infer<typeof restaurantSchema>
@@ -61,6 +64,9 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
       reward_stamps: restaurant?.reward_stamps || 5,
       plan_tier: restaurant?.plan_tier || 'Pro',
       menu_url: restaurant?.menu_url || '',
+      post_review_message: restaurant?.post_review_message || '',
+      direct_action_url: restaurant?.direct_action_url || '',
+      direct_action_button_text: restaurant?.direct_action_button_text || '',
     }
   })
 
@@ -256,6 +262,33 @@ export default function RestaurantForm({ restaurant, isAdmin, isClientManage }: 
               <p className="text-xs text-slate-500 mb-2">How many visits/scans before they get the reward? (Default is 5)</p>
               <Input id="reward_stamps" type="number" min={1} max={100} {...register('reward_stamps')} className={inputClasses} />
               {errors.reward_stamps && <p className="text-rose-500 text-xs font-medium">{errors.reward_stamps.message}</p>}
+            </div>
+          </div>
+          
+          <div className="mt-8 border-t border-slate-100 dark:border-slate-800 pt-6">
+            <h4 className="text-md font-semibold text-indigo-600 dark:text-indigo-400 mb-4 flex items-center gap-2">
+              <Gift className="w-4 h-4" /> Post-Review Promo (OTA Bypass / Direct Upsell)
+            </h4>
+            <p className="text-sm text-slate-500 mb-4">When a customer leaves a 4 or 5 star review, show them a special offer (e.g., Direct Booking Link or Discount Code).</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl">
+              <div className="space-y-2">
+                <Label htmlFor="post_review_message" className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                  Promo / Reward Message
+                </Label>
+                <Input id="post_review_message" {...register('post_review_message')} className={inputClasses} placeholder="e.g. Use code DIRECT15 for 15% off!" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="direct_action_url" className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                  Direct Action URL (Link)
+                </Label>
+                <Input id="direct_action_url" {...register('direct_action_url')} className={inputClasses} placeholder="https://yourhotel.com/book" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="direct_action_button_text" className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                  Button Text
+                </Label>
+                <Input id="direct_action_button_text" {...register('direct_action_button_text')} className={inputClasses} placeholder="e.g. Book Direct Now" />
+              </div>
             </div>
           </div>
         </div>

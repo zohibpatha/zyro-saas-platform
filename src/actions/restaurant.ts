@@ -69,6 +69,9 @@ export async function createRestaurant(formData: FormData) {
     reward_stamps: parseInt(formData.get('reward_stamps') as string || '5', 10),
     plan_tier: formData.get('plan_tier') as string || 'Pro',
     menu_url: formData.get('menu_url') as string || null,
+    post_review_message: formData.get('post_review_message') as string || null,
+    direct_action_url: formData.get('direct_action_url') as string || null,
+    direct_action_button_text: formData.get('direct_action_button_text') as string || null,
     owner_email: (formData.get('owner_email') as string) || user.email,
   })
 
@@ -101,6 +104,9 @@ export async function updateRestaurant(id: string, formData: FormData) {
     reward_stamps: parseInt(formData.get('reward_stamps') as string || '5', 10),
     plan_tier: formData.get('plan_tier') as string || 'Pro',
     menu_url: formData.get('menu_url') as string || null,
+    post_review_message: formData.get('post_review_message') as string || null,
+    direct_action_url: formData.get('direct_action_url') as string || null,
+    direct_action_button_text: formData.get('direct_action_button_text') as string || null,
   }
 
   // Admin can change owner_email

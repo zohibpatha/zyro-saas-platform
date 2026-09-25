@@ -27,7 +27,10 @@ export async function updateRestaurantBySlug(slug: string, formData: FormData) {
     p_loyalty_offer: formData.get('loyalty_offer') as string || null,
     p_reward_stamps: parseInt(formData.get('reward_stamps') as string || '5', 10),
     p_plan_tier: null,
-    p_menu_url: formData.get('menu_url') as string || null
+    p_menu_url: formData.get('menu_url') as string || null,
+    p_post_review_message: formData.get('post_review_message') as string || null,
+    p_direct_action_url: formData.get('direct_action_url') as string || null,
+    p_direct_action_button_text: formData.get('direct_action_button_text') as string || null
   })
 
   if (error) return { error: error.message }

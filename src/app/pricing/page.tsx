@@ -20,7 +20,7 @@ const tiers = [
   {
     name: 'Pro',
     id: 'tier-pro',
-    href: '/trial',
+    href: '/checkout?plan=399',
     priceMonthly: '₹399',
     setupFee: '₹999',
     setupStrikethrough: '₹1999',
@@ -140,31 +140,15 @@ export default async function PricingPage({ searchParams }: { searchParams: Prom
               </div>
 
               <div className={`p-4 rounded-2xl mb-8 border ${tier.mostPopular ? 'bg-indigo-50 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-800' : 'bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-800'}`}>
-                {tier.id === 'tier-pro' ? (
-                  <>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-sm font-bold text-slate-900 dark:text-white">7-Day Free Trial</span>
-                    </div>
-                    <div className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-1">
-                      (No Credit Card Required)
-                    </div>
-                    <div className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                      Pay ₹999 Setup Fee after 7 days if you love it.
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-sm font-bold text-slate-900 dark:text-white">Monthly Maintenance: {tier.priceMonthly}/mo</span>
-                    </div>
-                    <div className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-1">
-                      (1st Month is 100% FREE!)
-                    </div>
-                    <div className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                      Maintenance billing starts after 28 days.
-                    </div>
-                  </>
-                )}
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-sm font-bold text-slate-900 dark:text-white">Monthly Maintenance: {tier.priceMonthly}/mo</span>
+                </div>
+                <div className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-1">
+                  (1st Month is 100% FREE!)
+                </div>
+                <div className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                  Maintenance billing starts after 28 days.
+                </div>
               </div>
 
               <ul className="space-y-4 mb-8 flex-1">
@@ -186,7 +170,7 @@ export default async function PricingPage({ searchParams }: { searchParams: Prom
                 }`}
               >
                 <Link href={tier.href}>
-                  {tier.id === 'tier-pro' ? 'Start 7-Day Free Trial' : 'Get Started Now'}
+                  Get Started Now
                 </Link>
               </Button>
             </div>

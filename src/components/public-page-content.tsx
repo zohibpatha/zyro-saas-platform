@@ -334,6 +334,38 @@ export function PublicPageContent({ restaurant }: { restaurant: RestaurantWithPh
             <p className="text-[11px] text-center text-slate-400 font-medium px-4">
               Clicking this will copy your text and open Google Maps so you can simply paste and post!
             </p>
+
+            {/* THE PROMO/OTA-BYPASS MODULE */}
+            {(restaurant.post_review_message || restaurant.direct_action_url) && (
+              <div className="mt-4 w-full bg-gradient-to-br from-indigo-50 to-pink-50 border border-indigo-100 rounded-2xl p-5 shadow-sm animate-in zoom-in duration-500 delay-300 fill-mode-both">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-indigo-500 rounded-full flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                    <Gift className="w-5 h-5 text-white animate-bounce" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-indigo-900 leading-tight">Thank You Gift!</h4>
+                    <p className="text-[11px] text-indigo-700 font-medium opacity-80">Unlocked for your 5-star review</p>
+                  </div>
+                </div>
+                
+                {restaurant.post_review_message && (
+                  <p className="text-sm font-semibold text-slate-800 mb-4 bg-white/60 p-3 rounded-xl border border-white">
+                    {restaurant.post_review_message}
+                  </p>
+                )}
+
+                {restaurant.direct_action_url && (
+                  <a 
+                    href={formatUrl(restaurant.direct_action_url)} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 shadow-md transition-all active:scale-95"
+                  >
+                    {restaurant.direct_action_button_text || 'Claim Offer'} <ArrowRight className="w-4 h-4" />
+                  </a>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -21,6 +21,9 @@ export interface Restaurant {
   owner_email: string;
   trial_expires_at: string | null;
   menu_url: string | null;
+  post_review_message?: string | null;
+  direct_action_url?: string | null;
+  direct_action_button_text?: string | null;
   created_at: string;
   updated_at: string;
 }
