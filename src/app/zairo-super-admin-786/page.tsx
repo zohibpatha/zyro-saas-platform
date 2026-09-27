@@ -106,22 +106,18 @@ export default async function AdminDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {audits.map((a: any) => (
               <div key={a.id} className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm flex flex-col gap-2">
-                <img src={a.screenshot_url} alt="Payment Screenshot" className="w-full h-48 object-cover rounded-lg border border-gray-100" />
+                <a href={a.screenshot_url} target="_blank" rel="noopener noreferrer">
+                  <img src={a.screenshot_url} alt="Payment Screenshot" className="w-full h-48 object-cover rounded-lg border border-gray-100 hover:opacity-80 transition-opacity" />
+                </a>
                 <div className="font-medium text-gray-900 mt-2">{a.restaurants?.name || (a.phone_number ? `New Setup (${a.phone_number})` : 'New Setup')}</div>
                 <div className="text-sm text-gray-500 font-mono">Type: {a.payment_type}</div>
                 <div className="text-lg font-bold text-gray-900">₹{a.amount}</div>
                 <div className="grid grid-cols-2 gap-2 mt-2">
-                  <form action={async () => {
-                    "use server";
-                    await approvePaymentAudit(a.id);
-                  }}>
+                  <form action={approvePaymentAudit.bind(null, a.id)}>
                     <Button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white">Approve</Button>
                   </form>
-                  <form action={async () => {
-                    "use server";
-                    await rejectPaymentAudit(a.id, a.restaurant_id);
-                  }}>
-                    <Button type="submit" variant="destructive" className="w-full">Reject (Revoke)</Button>
+                  <form action={rejectPaymentAudit.bind(null, a.id, a.restaurant_id)}>
+                    <Button type="submit" variant="destructive" className="w-full">Reject</Button>
                   </form>
                 </div>
               </div>

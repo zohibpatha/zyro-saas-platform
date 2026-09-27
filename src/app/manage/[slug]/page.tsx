@@ -5,7 +5,7 @@ import RestaurantForm from '@/components/restaurant-form'
 import QRCodeGenerator from '@/components/qr-code-generator'
 import FoodPhotosManager from '@/components/food-photos-manager'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { ExternalLink, Link as LinkIcon, Camera, MapPin, QrCode, Sparkles, MessageSquareWarning, Users, MessageCircle } from 'lucide-react'
+import { ExternalLink, Link as LinkIcon, Camera, MapPin, QrCode, Sparkles, MessageSquareWarning, Users, MessageCircle, Lock } from 'lucide-react'
 import Link from 'next/link'
 
 export default async function ClientManagePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -211,6 +211,21 @@ export default async function ClientManagePage({ params }: { params: Promise<{ s
             <CardDescription className="text-slate-500">Constructive feedback from customers (1-3 stars)</CardDescription>
           </CardHeader>
           <CardContent className="relative z-10">
+            {restaurant.plan_tier === 'Basic' && (
+              <div className="absolute inset-0 z-50 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm flex flex-col items-center justify-center rounded-b-3xl">
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-xl text-center max-w-sm mx-4 border border-indigo-100 dark:border-indigo-900">
+                  <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Lock className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Pro Feature Locked</h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">Upgrade your plan to unlock this feature and grow your business faster.</p>
+                  <Link href={`/checkout?plan=399&restaurant_id=${restaurant.id}`} className="inline-block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all shadow-md">
+                    Upgrade to Pro
+                  </Link>
+                </div>
+              </div>
+            )}
+
             {!restaurant.private_feedback || restaurant.private_feedback.length === 0 ? (
               <div className="text-center py-8 text-slate-500 dark:text-slate-400">
                 No private feedback received yet.
@@ -241,8 +256,7 @@ export default async function ClientManagePage({ params }: { params: Promise<{ s
           </CardContent>
         </Card>
 
-        {restaurant.plan_tier !== 'Basic' && (
-          <Card className="xl:col-span-12 border-white/20 dark:border-slate-800/50 shadow-xl shadow-slate-200/50 dark:shadow-black/20 rounded-3xl bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl relative overflow-hidden group">
+        <Card className="xl:col-span-12 border-white/20 dark:border-slate-800/50 shadow-xl shadow-slate-200/50 dark:shadow-black/20 rounded-3xl bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <CardHeader className="relative z-10 pb-8">
               <div className="flex items-center gap-3 mb-2">
@@ -254,7 +268,22 @@ export default async function ClientManagePage({ params }: { params: Promise<{ s
               <CardDescription className="text-slate-500">Track returning customers and their loyalty stamps</CardDescription>
             </CardHeader>
             <CardContent className="relative z-10">
-              {!restaurant.loyalty_customers || restaurant.loyalty_customers.length === 0 ? (
+            {restaurant.plan_tier === 'Basic' && (
+              <div className="absolute inset-0 z-50 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm flex flex-col items-center justify-center rounded-b-3xl">
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-xl text-center max-w-sm mx-4 border border-indigo-100 dark:border-indigo-900">
+                  <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Lock className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Pro Feature Locked</h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">Upgrade your plan to unlock this feature and grow your business faster.</p>
+                  <Link href={`/checkout?plan=399&restaurant_id=${restaurant.id}`} className="inline-block w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all shadow-md">
+                    Upgrade to Pro
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            {!restaurant.loyalty_customers || restaurant.loyalty_customers.length === 0 ? (
                 <div className="text-center py-8 text-slate-500 dark:text-slate-400">
                   No customers have claimed a stamp yet.
                 </div>
@@ -318,7 +347,6 @@ export default async function ClientManagePage({ params }: { params: Promise<{ s
               )}
             </CardContent>
           </Card>
-        )}
       </div>
     </div>
   )

@@ -33,7 +33,9 @@ export async function submitOnboarding(formData: FormData, sessionId: string) {
   const subscriptionEndDate = new Date()
   subscriptionEndDate.setDate(subscriptionEndDate.getDate() + (session.months * 28)) // 28 days per month
 
-  const planTier = session.amount === 199 ? 'Basic' : 'Pro'
+  let planTier = 'Pro'
+  if (session.amount === 199 || session.amount === 499) planTier = 'Basic'
+  if (session.amount === 699 || session.amount === 1499) planTier = 'Elite'
 
   const { data: restaurant, error: createError } = await supabase
     .from('restaurants')
