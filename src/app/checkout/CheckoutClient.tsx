@@ -17,17 +17,8 @@ export default function CheckoutClient() {
   const monthlyCost = parseInt(planParam, 10) || 399
   
   // Calculate total amount
-  let totalAmount = monthlyCost
-  let setupFee = 0
-  
-  if (!isRenewal || isTrialConversion) {
-    if (monthlyCost === 199) setupFee = 499
-    else if (monthlyCost === 399) setupFee = 999
-    else if (monthlyCost === 699) setupFee = 1499
-    
-    // As per offer: First month is ONLY setup fee
-    totalAmount = setupFee
-  }
+  let totalAmount = monthlyCost;
+  let setupFee = 0;
   
   const [phoneNumber, setPhoneNumber] = useState('')
   const [saarthiCode, setSaarthiCode] = useState(searchParams.get('ref') || '')
@@ -138,11 +129,9 @@ export default function CheckoutClient() {
           ) : (
             <div className="mb-6">
               <p className="text-sm text-slate-500 font-medium mb-1">
-                One-time Setup Fee (28 Days Access Included)
+                First Month Maintenance
               </p>
-              <p className="text-xs text-green-600 dark:text-green-400 font-bold bg-green-100 dark:bg-green-900/30 inline-block px-2 py-1 rounded">
-                🎉 Offer: Monthly fee (₹{monthlyCost}) waived for the first month!
-              </p>
+              <p className="text-xs text-indigo-600 dark:text-indigo-400 font-bold bg-indigo-50 dark:bg-indigo-900/30 inline-block px-2 py-1 rounded">🔥 Limited Time Offer: Setup Fee Waived!</p>
             </div>
           )}
           

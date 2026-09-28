@@ -154,9 +154,7 @@ export async function POST(req: Request) {
       // New Signup Flow
       if (cleanSaarthiCode) {
         
-        let signupComm = 100; // default for 999
-        if (numAmount <= 499) signupComm = 50;
-        else if (numAmount >= 1499 || numAmount === 699) signupComm = 150;
+        let signupComm = 50; // Flat ₹50 commission for all plans
         
         const { data: affiliate } = await supabase
           .from('affiliates')

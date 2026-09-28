@@ -10,8 +10,8 @@ const tiers = [
     id: 'tier-starter',
     href: '/checkout?plan=199',
     priceMonthly: '₹199',
-    setupFee: '₹499',
-    setupStrikethrough: null,
+    setupFee: 'FREE',
+    setupStrikethrough: '₹499',
     setupDiscount: null,
     description: 'Perfect for individuals getting started with their digital presence.',
     features: ['Basic QR Page', 'Standard QR Code', 'Single location', 'Community support'],
@@ -22,8 +22,8 @@ const tiers = [
     id: 'tier-pro',
     href: '/checkout?plan=399',
     priceMonthly: '₹399',
-    setupFee: '₹999',
-    setupStrikethrough: '₹1999',
+    setupFee: 'FREE',
+    setupStrikethrough: '₹999',
     setupDiscount: '50% Off',
     description: 'Smart Review Funnel, Private Feedback & full customization.',
     features: ['Smart Review Funnel', 'Private Feedback Dashboard', 'Custom Brand Colors', 'Analytics Dashboard', 'Priority WhatsApp Support'],
@@ -34,8 +34,8 @@ const tiers = [
     id: 'tier-elite',
     href: '/checkout?plan=699',
     priceMonthly: '₹699',
-    setupFee: '₹1499',
-    setupStrikethrough: null,
+    setupFee: 'FREE',
+    setupStrikethrough: '₹1499',
     setupDiscount: null,
     description: 'Advanced features for established businesses and franchises.',
     features: ['Everything in Pro', 'Unlimited locations', 'Custom Branding', 'Dedicated Account Manager', '24/7 Phone Support'],
@@ -104,7 +104,7 @@ export default async function PricingPage({ searchParams }: { searchParams: Prom
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto w-full items-center mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto w-full items-center mb-24">
           {tiersWithRef.map((tier) => (
             <div 
               key={tier.id}
@@ -129,25 +129,20 @@ export default async function PricingPage({ searchParams }: { searchParams: Prom
               
               <div className="mb-6">
                 <div className="flex items-baseline text-4xl font-extrabold text-slate-900 dark:text-white">
-                  {tier.setupFee}
-                  <span className="ml-2 text-lg font-medium text-slate-500 dark:text-slate-400 line-through">
-                    {tier.setupStrikethrough || `₹${parseInt(tier.setupFee.replace('₹', '')) + parseInt(tier.priceMonthly.replace('₹', ''))}`}
-                  </span>
+                  {tier.priceMonthly}
+                  <span className="ml-1 text-xl font-medium text-slate-500">/mo</span>
                 </div>
-                <div className="text-sm font-semibold text-green-600 dark:text-green-400 mt-2 bg-green-100 dark:bg-green-900/30 inline-block px-2 py-1 rounded">
-                  🎉 Pay ONLY setup fee today!
+                <div className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                  Setup Fee: <span className="line-through">{tier.setupStrikethrough}</span> <span className="font-bold text-green-600 dark:text-green-400">WAIVED!</span>
                 </div>
               </div>
 
               <div className={`p-4 rounded-2xl mb-8 border ${tier.mostPopular ? 'bg-indigo-50 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-800' : 'bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-800'}`}>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-sm font-bold text-slate-900 dark:text-white">Monthly Maintenance: {tier.priceMonthly}/mo</span>
-                </div>
-                <div className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mb-1">
-                  (1st Month is 100% FREE!)
+                  <span className="text-sm font-bold text-slate-900 dark:text-white">No hidden costs.</span>
                 </div>
                 <div className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                  Maintenance billing starts after 28 days.
+                  Start using your digital presence today. Cancel anytime.
                 </div>
               </div>
 
